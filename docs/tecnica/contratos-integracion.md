@@ -52,11 +52,22 @@ Este catálogo resuelve la clarificación ya registrada en
 `gi_crm/adapters/persons_http.py` (`PersonsHttpApi`) implementan los
 puertos contra un contrato JSON documentado, recibiendo un `transport`
 inyectado (`callable(method, url, *, json=None) -> dict`) para no forzar
-ninguna dependencia de cliente HTTP concreta en `gi_crm`. Ni
-`gi-platform-core` ni `gi-common-persons` exponen un servicio HTTP hoy
-(verificado en código): `tests_crm/test_adapters_http.py` sólo prueba
-estos adaptadores contra un transporte simulado — la integración real
-sigue explícitamente bloqueada y no se declara probada.
+ninguna dependencia de cliente HTTP concreta en `gi_crm`.
+`tests_crm/test_adapters_http.py` sólo prueba estos adaptadores contra un
+transporte simulado — la integración real sigue explícitamente bloqueada y
+no se declara probada.
+
+Reverificado contra `gi-platform-core v0.2.1` (tag real) y el `develop`
+actual de `gi-common-persons`: `CoreApi.authorize` no cambió de forma
+respecto de `v0.1.0` (compatible sin ajustes). Persons sigue sin exponer
+ningún módulo HTTP en el código real. Core sí agregó un adaptador HTTP
+propio en `v0.2.1` (`gi_platform_core/http.py`), pero cubre únicamente
+`/v1/organizations/{id}/identity-validation` e `/identity-links`
+(vinculación de identidad Core↔Persons); no existe ninguna ruta de
+autorización (`/v1/authorize`). El bloqueo de `CoreHttpApi` se mantiene
+por esa razón — falta de superficie HTTP para `authorize`, la única
+capacidad de Core que CRM consume — no por ausencia total de servicio HTTP
+en Core.
 
 ## Fakes de prueba
 

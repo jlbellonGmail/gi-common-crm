@@ -1,9 +1,16 @@
 """Adaptador HTTP documentado del subset de PersonsApi usado por gi_crm.
 
-BLOQUEADO / no verificable end-to-end: `gi-common-persons` (milestone
-02-07 en `develop`, sin release propio) sólo expone biblioteca Python hoy
-(verificado en código, ver docs/tecnica/contrato-persons.md). Sólo se
-prueba en tests_crm/test_adapters_http.py contra un transporte simulado.
+BLOQUEADO / no verificable end-to-end: reverificado contra
+`gi-common-persons` en `develop` (milestone 02-07 + identity-linking
+mergeados, sin release/tag propio todavía). Las firmas reales de
+`create_person`/`get_person`/`find_duplicate_candidates` en `gi_persons/
+api.py` no cambiaron; compatibles con este adaptador sin ajustes. Persons
+sigue sin exponer ningún módulo HTTP (ni WSGI ni ASGI) en el código real,
+a diferencia de Core que sí agregó uno en `v0.2.1` (ver
+gi_crm/adapters/core_http.py). Esta integración sigue bloqueada/no
+verificable end-to-end (ver docs/tecnica/contratos-integracion.md). Sólo
+se prueba en tests_crm/test_adapters_http.py contra un transporte
+simulado.
 """
 
 
