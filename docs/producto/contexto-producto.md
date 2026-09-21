@@ -1,140 +1,121 @@
-# Contexto de producto
+# Contexto de producto — GI-COMMON-CRM
 
-Este documento es el conocimiento funcional persistente del producto real
-que se construye sobre este template. Es la fuente de contexto que
-`analyst-agent` lee automáticamente al preparar cualquier `spec.md`
-(Feature o Milestone) — ver "Política de fuentes y trazabilidad" en
-`AGENTS.md`.
+Fuente: GOAL "GI-COMMON-CRM — Fundación, diseño e implementación" recibido
+el 2026-09-20. Documento transversal (no crea rama, run, PR ni modifica
+ROADMAP.md) — ver "Contexto de producto y bootstrap" en `AGENTS.md`.
 
-No es una spec de una feature puntual: es conocimiento estable y
-reutilizable entre features (propósito, usuarios, reglas de negocio ya
-adoptadas). Las decisiones específicas de una sola feature quedan en su
-propio `runs/<slug>/spec.md` y `decision.md`, no acá. Cuando una decisión
-tomada durante una feature resulta ser conocimiento estable del producto
-(no solo de esa feature), `builder-agent` actualiza este archivo como
-parte de cerrarla (ver "Evolución del contexto de producto" en
-`AGENTS.md`).
+## Propósito
 
-## Propósito del producto
+Módulo COMMON, independiente, multitenant y reutilizable por N verticales
+del Sistema Integral GI (Dental, Law, GI-OT, futuras). Primer producto:
+gestión de Leads y su ciclo de vida comercial (captación, seguimiento,
+asignación, conversión). No es una interfaz gráfica ni un CRM empresarial
+completo en esta versión — el alcance es la capacidad de negocio de Leads.
 
-Template base AI-Native para arrancar un proyecto nuevo ya con un circuito
-agéntico AI-Native funcionando: analista → auditor → implementador → QA →
-code reviewer, con un único punto de intervención humana (la decisión de
-merge sobre la PR). No define stack de producto — eso lo decide cada
-proyecto real que nazca de este template, documentándolo en
-`docs/tecnica/arquitectura.md` antes de que cualquier agente asuma
-tecnología no declarada explícitamente.
+## Límites de responsabilidad (arquitectura GI)
 
-## Problema que resuelve
+- **gi-platform-core**: organizaciones, sedes, identidad de acceso, usuarios,
+  membresías, autenticación, autorización, multitenancy. CRM consume su
+  superficie pública, nunca la duplica.
+- **gi-common-persons**: personas físicas, identificadores, contacto,
+  vínculo organizacional, resolución/deduplicación de personas. Fuente
+  autorizada de datos generales de personas; CRM no implementa un sistema
+  paralelo.
+- **gi-common-crm** (este repo): Leads, origen/canal de captación, ciclo de
+  vida comercial, asignación de responsables, actividades y seguimiento,
+  historial comercial, conversión y cierre comercial.
+- **Verticales** (Dental, Law, GI-OT, ...): sólo sus especializaciones
+  propias (p.ej. Patient en Dental). Consumen los contratos públicos de
+  Core/Persons/CRM; no duplican sus capacidades.
 
-Evita que cada proyecto nuevo tenga que diseñar desde cero el circuito
-agéntico, sus roles (analyst, reviewer, builder, qa, code-reviewer),
-scripts del motor ejecutable (`scripts/*.ps1`), tests y estructura de
-documentación. Este template provee la andamiaje canónica que todos los
-proyectos pueden heredar y comenzar a usar de inmediato.
+Principio obligatorio: lo reutilizable pertenece a COMMON, lo específico de
+cada negocio pertenece a la vertical. Core y Persons nunca dependen de CRM;
+CRM nunca depende de una vertical. Sin dependencias circulares ni claves
+foráneas físicas entre bases de datos de servicios separados.
 
-## Usuarios y actores
+## Persona vs. Lead vs. entidad de vertical
 
-- **Equipo de desarrollo**: Usa el circuito para features nuevas y
-  milestones, siguiendo `AGENTS.md` y `ROADMAP.md`.
-- **Main Agent**: Coordina la ejecución del circuito como subagente
-  (analyst → reviewer → builder → qa → code-reviewer).
-- **`analyst-agent`**: Lee automáticamente este archivo como contexto
-  antes de escribir cualquier `spec.md`, reduciendo suposiciones.
-- **Proyecto que adopte este template**: Definirá su stack (frontend,
-  backend, base de datos, hosting, integraciones) en
-  `docs/tecnica/arquitectura.md`.
+Person (Persons) es la persona física. Lead (CRM) es un proceso comercial
+con ciclo de vida propio, que puede existir sin Person identificada todavía
+(captación incompleta) y luego vincularse a una Person existente o nueva.
+Una Person puede tener N Leads en el tiempo y en distintas
+organizaciones/verticales — `person_id` en Lead es opcional y sin `UNIQUE`.
+Cliente/Paciente/Profesional/oportunidad futura son conceptos de la
+vertical, no de CRM ni de Persons; CRM sólo conserva una referencia lógica
+(`LeadExternalReference`) hacia la entidad que la vertical cree al
+convertir el Lead.
 
-## Flujos principales
+## Integración Core y Persons (estado real verificado, no supuesto)
 
-1. **Feature nueva**: `analyst-agent` → `reviewer-agent` → `builder-agent`
-   → `qa-agent` → `code-reviewer-agent` → READY_FOR_PR → PR → CI verde →
-   HITL (único punto humano: MERGE/NO MERGE) → gate post-HITL → merge →
-   close-feature.ps1 → `[x]` ROADMAP.md
-
-2. **Milestone**: Múltiples items de ROADMAP.md agrupados bajo un
-   `work-unit.json`, procesados como una unidad atomica: todos los items
-   deben pasar de `[ ]` a `[-]` juntos (via `ready-for-pr.ps1 -Mode
-   Milestone`) y de `[-]` a `[x]` juntos (via `close-feature.ps1 -Mode
-   Milestone`).
-
-3. **Cierre post-merge**: GitHub Actions `.github/workflows/post-merge-close-
-   feature.yml` ejecuta `scripts/close-feature.ps1` desde `develop` para
-   cambiar `[-]` → `[x]` en ROADMAP.md y limpiar worktrees.
-
-## Comportamiento esperado
-
-- **No asumir stack**: Decisión de backend, base de datos, hosting o
-  integraciones externas queda exclusivamente en `docs/tecnica/arquitectura.md`.
-  Ningún agente debe asumir tecnología, framework o dependencia no
-  declarada explícitamente (ver `AGENTS.md` sección "Stack").
-- **Contexto leído automáticamente**: `analyst-agent` consume
-  `docs/producto/contexto-producto.md` al iniciar, usándolo como fuente
-  de nivel 4 de precedencia (después de instrucción humana, reglas globales
-  y ROADMAP.md items).
-- **Un solo HITL**: La decisión MERGE/NO MERGE es el único punto de
-  intervención humana. No hay checkpoints humanos antes de crear la PR.
-- **SDD obligatorio**: `spec.md` + `plan.md` + `tasks.md` con trazabilidad
-  AC-N. `reviewer-agent` audita los tres artefactos juntos.
-- **Documentación transversal**: `docs/producto/contexto-producto.md` vive
-  fuera de `runs/`, se lee automáticamente y se actualiza a través del
-  tiempo. No es un artefacto de una feature.
-- **Versionado**: Tags `vX.Y.Z` (SemVer) en releases a `main`, pusheados por
-  humano después de mergear.
+- `gi-platform-core` `v0.1.0` (release publicado) expone **sólo biblioteca
+  Python** (`CoreApi.authorize` y superficie relacionada); **no hay HTTP
+  desplegado**. Bloqueo real para la Modalidad B (HTTP) con Core.
+- `gi-common-persons` (fundación + milestone 02-07 mergeados a `develop`,
+  sin release/tag todavía) expone **sólo biblioteca Python**
+  (`PersonsApi.find_duplicate_candidates`, `get_person`, `create_person`,
+  etc.); **no hay HTTP desplegado** tampoco.
+- CRM debe poder operar hoy en Modalidad A (biblioteca) mediante puertos
+  locales (`Protocol`) que un `CoreApi`/`PersonsApi` real ya satisface por
+  forma. La Modalidad B (HTTP) se deja preparada contra un contrato
+  documentado, marcada explícitamente como no verificable end-to-end hasta
+  que Core/Persons publiquen un servicio HTTP real.
 
 ## Reglas de negocio conocidas
 
-Vacío — este template no tiene reglas de dominio propias. Cada proyecto
-real que nazca de este template agrega las suyas en `.claude/rules/` y las
-refleja en `AGENTS.md` — no se copian reglas de otro proyecto sin
-adaptarlas.
+- Aislamiento multitenant estricto: ninguna operación de Lead, actividad,
+  historial, búsqueda de duplicados o conversión puede filtrar información
+  entre organizaciones, incluso si Persons/Core no están disponibles
+  (fail-safe: no se autoriza por defecto ante caída de una dependencia).
+- Cardinalidad: Organization 1—N Lead; Person 0..1—N Lead (sin UNIQUE);
+  Lead 1—N actividad/evento de estado/evento de asignación; Lead 0..N
+  `LeadExternalReference` (una por vertical/tipo/id externo, `UNIQUE` en
+  esa terna) para representar conversión sin acoplar CRM a la vertical.
+- No se incorporan campañas, oportunidades avanzadas ni marketing
+  automatizado en esta versión — fuera de alcance explícito del GOAL.
+
+## Persistencia y convenciones ya adoptadas por el ecosistema (verificadas)
+
+PostgreSQL vía Supabase, sin ORM/Alembic: SQL versionado en
+`supabase/migrations/`, esquema propio por servicio (`persons.*` en
+Persons), PK compuesta `(organization_id, id)`, RLS por
+`current_setting('app.organization_id', true)`, adaptador DB-API 2.0 puro
+que no importa el driver. CRM sigue la misma convención (`crm.*`) para
+consistencia entre servicios COMMON del Sistema Integral GI. El proyecto
+Supabase compartido (`gletzbwuvmwjkmoufmyj`, usado hoy por Core y Persons)
+es infraestructura ajena en uso: aplicar migraciones ahí es una decisión
+tardía y explícita, no parte de la base ni de las pruebas automáticas
+(que corren contra Postgres efímero local/CI).
 
 ## Restricciones funcionales
 
-- No agregar un backend, base de datos, integración externa o dependencia
-  de build sin que quede como una decisión de arquitectura explícita en
-  `docs/tecnica/arquitectura.md`.
-- No inventar contenido de negocio no provisto (datos, textos legales,
-  precios, certificaciones, testimonios) — el contenido real del
-  producto debe venir del cliente/negocio real, no generarse por el
-  agente.
-- No conectar integraciones a servicios o endpoints reales sin que el
-  spec de esa feature declare explícitamente a dónde van los datos y qué
-  validación/consentimiento aplica, sobre todo si hay datos personales
-  involucrados.
+- No inventar reglas de negocio, permisos, catálogos de país/documento,
+  retención o contenido legal no provisto por el GOAL o por decisión humana
+  explícita.
+- No declarar disponible una integración HTTP con Core o Persons mientras
+  no exista un servicio real desplegado — se documenta como bloqueo.
+- No aplicar migraciones ni mutar el proyecto Supabase compartido sin
+  autorización humana explícita previa (es infraestructura de otros
+  productos reales en uso).
+- No fusionar PR ni publicar el release `v0.1.0` sin decisión humana
+  (único HITL del circuito, más la decisión de versión/tag).
 
 ## Decisiones de producto ya adoptadas
 
-Vacío — aún no hay decisiones de producto permanentes confirmadas para
-este template. Cuando una feature concrete decisiones reutilizables,
-`builder-agent` las reflejará en este archivo como parte de cerrar la
-feature, según "Evolución del contexto de producto" en `AGENTS.md`.
+- Alcance v0.1.0: Leads (alta, consulta, filtro/paginación, edición,
+  transición de estado validada, asignación/reasignación, actividades,
+  historial, detección de duplicados vía Persons, vínculo con Person,
+  cierre/descarte, conversión comercial con referencia externa a la
+  vertical). Sin UI gráfica.
+- Paquete `gi_crm` sin dependencias de runtime obligatorias (igual que
+  `gi_platform_core`/`gi_persons`); FastAPI/psycopg como *extras*
+  opcionales para las modalidades HTTP/Postgres.
+- Cardinalidad Person↔Lead no única (ver arriba); confirmado por el GOAL,
+  no requiere confirmación humana adicional.
 
 ## Límites generales
 
-Queda explícitamente fuera del alcance de este documento y del template
-base:
-- Stack tecnológico (define en `docs/tecnica/arquitectura.md` por proyecto)
-- Precios, certificaciones, testimonios o datos del producto real
-- Integraciones a servicios externos (definen por feature en spec/plan)
-- Cualquier política de seguridad, privacidad o cumplimiento regulatorio
-
-## Terminología
-
-- **WorkUnit**: Feature (un item `NN-slug` en ROADMAP.md) o Milestone
-  (N items agrupados bajo `work-unit.json`).
-- **SDD**: Spec-Driven Development (`spec.md` → `plan.md` → `tasks.md` con
-  trazabilidad AC-N).
-- **HITL**: Human-in-the-loop (única decisión: MERGE/NO MERGE sobre la PR).
-- **ROADMAP.md**: Mapa de features con estados `[ ]` (pendiente), `[-]`
-  (READY_FOR_PR), `[x]` (completado después de merge).
-- **Feature**: Item individual `NN-slug` en ROADMAP.md con su propia
-  rama `feature/NN-slug`.
-- **Milestone**: Grupo de items de ROADMAP.md que forman un solo
-  incremento funcional coherente, con rama `milestone/<slug>` y manifest
-  `runs/milestone-<slug>/work-unit.json`.
-- **Circuito agéntico**: Secuencia Analyst→Reviewer→Builder→QA→Code-Reviewer
-  con HITL único humano.
-- **POST-HITL GATE**: Validación automática después de la aprobación humana
-  que verifica que los checks de CI siguen verdes antes de mergear.
-- **SDD**: Spec-Driven Development (Desarrollo Impulsado por Specs).
+Fuera de alcance de este documento y de v0.1.0: UI gráfica, campañas y
+marketing automatizado, oportunidades avanzadas más allá del Lead,
+despliegue a la infraestructura Supabase compartida (unidad tardía y
+condicionada a autorización humana), integración HTTP real con Core/Persons
+(bloqueada hasta que existan del lado de esos repos).
