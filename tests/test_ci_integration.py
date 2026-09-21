@@ -60,11 +60,21 @@ def test_circuit_tests_runs_pytest(workflow_file: str):
 
 
 @pytest.mark.parametrize("workflow_file", ["ci.yml"])
-def test_product_tests_is_placeholder(workflow_file: str):
-    """product-tests debe contener mensaje de placeholder."""
+def test_product_tests_runs_real_suite(workflow_file: str):
+    """07-readiness-integracion: product-tests ya no es placeholder, corre
+    la suite real de gi_crm contra un Postgres de servicio. Ver
+    docs/tecnica/readiness-integracion.md.
+
+    No se verifica la ausencia case-insensitive de la palabra
+    "placeholder": el job conserva un comentario en prosa que menciona el
+    placeholder heredado del template para explicar por qué ya no existe
+    (ver docs/tecnica/readiness-integracion.md). Lo que debe ausentarse es
+    el marcador y el step reales de ese placeholder."""
     content = _read_workflow(workflow_file)
-    assert "placeholder" in content.lower(), "product-tests debe indicar es placeholder"
-    assert "arquitectura.md" in content.lower(), "debe referenciar docs/tecnica/arquitectura.md"
+    assert "PLACEHOLDER" not in content
+    assert "Placeholder (sin stack definido)" not in content
+    assert "postgres" in content.lower()
+    assert "pytest -v tests_crm/" in content
 
 
 @pytest.mark.parametrize("workflow_file", ["ci.yml"])

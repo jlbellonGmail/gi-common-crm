@@ -1,0 +1,11 @@
+# Dependencias para correr tests_crm/ (producto, no el circuito).
+# fastapi/pydantic/psycopg ya se instalan via los extras [http]/[postgres]
+# de pyproject.toml (ADR-C02, docs/tecnica/arquitectura-crm.md); no se
+# duplican aqui para no tener dos fuentes de verdad sobre la misma
+# dependencia. Este manifiesto solo fija lo exclusivo de la suite de
+# tests.
+pytest==8.3.5
+# Requerido por starlette.testclient.TestClient (usado en
+# tests_crm/test_http_contract.py); no es dependencia transitiva
+# declarada de fastapi en la version instalada.
+httpx==0.28.1
