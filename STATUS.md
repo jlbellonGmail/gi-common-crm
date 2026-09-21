@@ -165,18 +165,18 @@ no se corrige en esta unidad por alcance.
 
 ## Estado verificado automáticamente
 
-- Actualizado: 2026-09-21T13:17:57Z
+- Actualizado: 2026-09-21T14:03:27Z
 - Versión: unreleased
-- Rama: milestone/leads-core-implementation
-- HEAD: a40deb09343b7514824ed4fbcbebc2096a2fcfb4
-- Remoto: https://github.com/jlbellonGmail/gi-common-crm.git
+- Rama: develop
+- HEAD: 195da32ae6d9234b8d266b6cd21714d723dfb403
+- Remoto: https://github.com/jlbellonGmail/gi-common-crm
 - Working tree: dirty
-- Worktrees: 2
-- Worktrees Git: 2
-- Unidades activas: = [milestone/leads-core-implementation]
+- Worktrees: 3
+- Worktrees Git: 3
+- Unidades activas: ninguna
 - PR activa: UNKNOWN / sin PR abierta
-- CI: UNKNOWN / sin CI verificable
-- CI vigente: UNKNOWN / sin CI verificable
+- CI:  @ 93b8d6816f52d855ed0de59a776d567117b66fa8
+- CI vigente:  @ 93b8d6816f52d855ed0de59a776d567117b66fa8
 - Última release: UNKNOWN / no disponible
 
 <!-- STATUS:AUTO:END -->
