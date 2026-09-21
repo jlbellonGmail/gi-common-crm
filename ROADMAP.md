@@ -7,7 +7,7 @@ bootstrap no cierra ninguna por sí mismo.
 
 ## Backlog
 
-- [-] 01-fundacion-diseno — consolidar decisiones, procedencia, contratos reales de Core/Persons y arquitectura del dominio CRM; adoptar el circuito.
+- [x] 01-fundacion-diseno — consolidar decisiones, procedencia, contratos reales de Core/Persons y arquitectura del dominio CRM; adoptar el circuito.
 - [ ] 02-contratos-integracion — puertos locales `CoreApi`/`PersonsApi`, adaptadores de biblioteca y de HTTP (HTTP documentado y marcado bloqueado hasta que Core/Persons lo desplieguen), fakes de prueba.
 - [ ] 03-dominio-leads — modelos de dominio, `LeadService`, máquina de estados comerciales validada, detección de duplicados, concurrencia optimista.
 - [ ] 04-persistencia-aislamiento — esquema SQL `crm.*`, RLS por organización, `PostgresLeadStore`, `InMemoryLeadStore`, pruebas reales contra PostgreSQL efímero.
@@ -31,4 +31,5 @@ tag ni una release en este documento.
 - [AGENTS](AGENTS.md) — operación del circuito.
 - [STATUS](STATUS.md) — estado actual para reentrada.
 - [Contexto de producto](docs/producto/contexto-producto.md) — conocimiento funcional persistente.
+
 
