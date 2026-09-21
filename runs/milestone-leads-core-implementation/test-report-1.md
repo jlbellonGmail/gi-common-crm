@@ -1,11 +1,11 @@
----
+```yaml
 status: approved
 attempt: 1
 feedback:
   - Sin hallazgos bloqueantes. Suite del circuito y del producto en verde;
     persistencia real verificada contra Postgres efímero, incluyendo un
-    bug real detectado y corregido (`bump_lead_version`).
----
+    bug real detectado y corregido (bump_lead_version).
+```
 
 # Test report 1 — Milestone leads-core-implementation
 
