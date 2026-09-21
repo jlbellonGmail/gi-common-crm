@@ -95,15 +95,15 @@ no se corrige en esta unidad por alcance.
 
 ## Estado verificado automáticamente
 
-- Actualizado: 2026-09-21T04:07:29Z
+- Actualizado: 2026-09-21T12:16:09Z
 - Versión: unreleased
-- Rama: develop
-- HEAD: 5e5649e95b1de08a766cda8c37adcd5aba7484b7
+- Rama: milestone/leads-core-implementation
+- HEAD: 6ec513c6fa5faab18fad0be6cd09d19da68e4d23
 - Remoto: https://github.com/jlbellonGmail/gi-common-crm.git
 - Working tree: dirty
-- Worktrees: 3
-- Worktrees Git: 3
-- Unidades activas: ninguna
+- Worktrees: 2
+- Worktrees Git: 2
+- Unidades activas: = [milestone/leads-core-implementation]
 - PR activa: UNKNOWN / sin PR abierta
 - CI: UNKNOWN / sin CI verificable
 - CI vigente: UNKNOWN / sin CI verificable
