@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "mode": "milestone",
+  "slug": "leads-core-implementation",
+  "items": [
+    "02-contratos-integracion",
+    "03-dominio-leads",
+    "04-persistencia-aislamiento",
+    "05-api-publica",
+    "06-seguimiento-multivertical"
+  ]
+}
