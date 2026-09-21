@@ -3,12 +3,20 @@
 Fecha de inspección: 2026-09-21. Estado: unidad `01-fundacion-diseno`
 cerrada (`[x]` en `ROADMAP.md`, PR #1 mergeada a `develop` con HITL
 humano). Corrección de circuito `T01-fix-post-merge-close-mode` (PR #2)
-también mergeada. Milestone `leads-core-implementation` (ítems 02–06,
-`[-]` READY_FOR_PR en `ROADMAP.md`) tiene implementación completa,
-evidencia FULL-SDD completa y **PR #3 abierta contra `develop` con CI
-verde** (`circuit-tests`, `product-tests`, `local-reconciler-tests`).
-Pendiente exclusivamente de la acción humana de cierre descrita abajo —
-ver "Pendientes materiales".
+también mergeada. **Milestone `leads-core-implementation` (ítems 02–06)
+mergeado a `develop` mediante PR #3** (autorización humana directa,
+`merge commit 93b8d68`, confirmado vía `gh pr view 3` → `state: MERGED`).
+`post-merge-close-feature.yml` cerró los 5 ítems a `[x]` en `ROADMAP.md`
+(commit `195da32`) y sincronizó `STATUS.md` (commit `d2af72f`) sin
+intervención manual — verificado con `gh run list --workflow=post-merge-
+close-feature.yml` (`conclusion: success` sobre
+`milestone/leads-core-implementation`). Worktree y rama local reconciliados
+vía `local-feature-reconcile.ps1` (rama remota `milestone/leads-core-
+implementation` seguía existiendo porque el merge humano no incluyó
+`--delete-branch`; sólo se limpió el estado local, no se tocó el remoto).
+`pytest -q tests/` (circuito): `267 passed, 2 warnings`. `pytest -q
+tests_crm/` (producto): `62 passed, 4 skipped` (Postgres real no
+configurado localmente). En curso: Unidad `07-readiness-integracion`.
 
 ## Hechos
 
@@ -85,29 +93,35 @@ ver "Pendientes materiales".
   `docs/tecnica/contratos-integracion.md` y en los docstrings de
   `gi_crm/adapters/core_http.py`/`persons_http.py` (que además
   referenciaban un nombre de archivo obsoleto, corregido de paso).
+- PR #3 mergeada por decisión humana explícita, comunicada directamente en
+  el chat de este circuito (no vía comentario en GitHub) y verificada
+  después contra el estado real (`gh pr view 3`, `git log origin/develop`,
+  `ROADMAP.md`), no asumida. No se usó el mecanismo automatizado
+  `GovernanceMode SingleMaintainer` de `complete-approved-pr.ps1`: este
+  agente no fabricó `human-authorization.md`/`independent-review.md`
+  porque el propio diseño del script exige que la revisión independiente
+  no sea self-review del Builder, y este agente fue el único Builder de
+  todo el Milestone.
+- **Hallazgo real, no relacionado con esta unidad, registrado por
+  precisión**: `decision.md` del Milestone (ya mergeado) afirma que
+  `gi-common-persons` "reemplazó" el placeholder de `product-tests` en su
+  propia unidad `07-readiness-integracion`, citando su `ci.yml` como
+  verificación. Reinspeccionado ahora contra el `develop` real de
+  `gi-common-persons` (commit `433b651`): el placeholder sigue **literal**
+  en `product-tests` pese a que `ROADMAP.md` de ese repo marca
+  `07-readiness-integracion` como `[x]`. La afirmación era incorrecta;
+  no se corrige `gi-common-persons` desde aquí (fuera de alcance y
+  prohibido por el GOAL). No invalida la decisión tomada en su momento
+  (la razón principal era la precedencia de `ROADMAP.md` sobre
+  `plan-crm.md` según `AGENTS.md`, independiente de este precedente), pero
+  sí significa que la Unidad `07` de CRM no tiene, en la práctica, un
+  ejemplo real que copiar de un repo hermano — el CI real de
+  `product-tests` se diseña aquí desde cero.
 
 ## Pendientes materiales
 
-**Acción humana requerida para cerrar la PR #3** (no ejecutable de forma
-autónoma sin fabricar evidencia): el gate automático
-(`post-hitl-merge-gate.yml`) exige, en `GovernanceMode SingleMaintainer`,
-tres archivos de evidencia (`human-authorization.md`,
-`independent-review.md` con revisión genuinamente independiente,
-`integrity-evidence.md`) que este agente no debe fabricar — el propio
-diseño de `complete-approved-pr.ps1` lo prohíbe explícitamente
-("SingleMaintainer requiere autorización humana scoped explícita; no se
-fabrica self-review"). El precedente real de este mismo repositorio (PR
-#1 y PR #2, verificado vía `gh api .../reviews` y `gh pr view --json
-mergedBy`: ambas sin ninguna review formal registrada, mergeadas
-directamente por la cuenta humana `jlbellonGmail`) y la propia regla
-explícita de `AGENTS.md` ("El merge directo humano en GitHub también es
-válido después de revisar CI y evidencia") indican que la vía correcta
-aquí es que el humano mergee la PR #3 directamente desde GitHub (UI o
-`gh pr merge 3 --merge --delete-branch`) tras revisar CI (verde) y la
-evidencia (`SUMMARY.md`, `test-report-1.md`, `code-review-1.md`,
-`audit-1.md`). Ese merge directo dispara igualmente
-`post-merge-close-feature.yml`, que cierra el Milestone en `ROADMAP.md` y
-sincroniza el remoto sin intervención adicional del agente.
+Ninguno bloqueante para continuar. El único pendiente de gobernanza
+(cierre de la PR #3) se resolvió con la acción humana descrita arriba.
 
 Ver "Clarificaciones materiales pendientes" en
 [plan-crm.md](docs/tecnica/plan-crm.md): catálogo inicial de `LeadSource`
@@ -140,16 +154,14 @@ Maintenance auxiliar en ese script también.
 
 ## Próximo paso
 
-1. **HITL pendiente**: el humano mergea la PR #3
-   (https://github.com/jlbellonGmail/gi-common-crm/pull/3) directamente
-   en GitHub tras revisar CI/evidencia (ver "Pendientes materiales").
-2. Tras confirmar el merge, la sincronización remota y el cierre formal
-   del Milestone (`ROADMAP.md` con 02–06 en `[x]`), continuar
-   autónomamente con la Unidad `07-readiness-integracion`: CI real de
-   producto (reemplazar el placeholder), documentación de integración,
-   primera versión funcional.
-3. La Unidad `08-persistencia-supabase-real` permanece explícitamente
-   diferida hasta autorización humana adicional.
+1. Milestone `leads-core-implementation` cerrado. Continuar autónomamente
+   con la Unidad `07-readiness-integracion`: reemplazar el placeholder de
+   `product-tests` por ejecución real de `tests_crm/` contra Postgres de
+   servicio, completar documentación de integración/supply-chain y dejar
+   evidencia para el próximo HITL (PR de la unidad 07).
+2. La Unidad `08-persistencia-supabase-real` permanece explícitamente
+   diferida hasta autorización humana adicional; no se inicia en esta
+   unidad.
 
 Nota manual sobre el bloque automático siguiente: `Worktrees`/`Worktrees
 Git` no reflejan el conteo real cuando hay exactamente 1 worktree
@@ -165,18 +177,18 @@ no se corrige en esta unidad por alcance.
 
 ## Estado verificado automáticamente
 
-- Actualizado: 2026-09-21T14:03:27Z
+- Actualizado: 2026-09-21T14:44:15Z
 - Versión: unreleased
 - Rama: develop
-- HEAD: 195da32ae6d9234b8d266b6cd21714d723dfb403
-- Remoto: https://github.com/jlbellonGmail/gi-common-crm
+- HEAD: d2af72f8c0dd110940146bca466df3a868b16a0b
+- Remoto: https://github.com/jlbellonGmail/gi-common-crm.git
 - Working tree: dirty
 - Worktrees: 3
 - Worktrees Git: 3
 - Unidades activas: ninguna
 - PR activa: UNKNOWN / sin PR abierta
-- CI:  @ 93b8d6816f52d855ed0de59a776d567117b66fa8
-- CI vigente:  @ 93b8d6816f52d855ed0de59a776d567117b66fa8
+- CI: UNKNOWN / sin CI verificable
+- CI vigente: UNKNOWN / sin CI verificable
 - Última release: UNKNOWN / no disponible
 
 <!-- STATUS:AUTO:END -->
