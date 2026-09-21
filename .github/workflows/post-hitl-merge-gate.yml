@@ -76,20 +76,33 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          run_root='runs'
-          if [[ -n '${{ steps.feature.outputs.version }}' ]]; then
-            run_root="runs/${{ steps.feature.outputs.version }}"
-          fi
+          $slug = '${{ steps.feature.outputs.slug }}'
+          $mode = '${{ steps.feature.outputs.mode }}'
+          $version = '${{ steps.feature.outputs.version }}'
+
+          $runRoot = 'runs'
+          if ($version -ne '') {
+            $runRoot = "runs/$version"
+          }
+
+          # Milestone usa runs/milestone-<slug>/ (Get-WorkUnitInfo -Mode
+          # Milestone); Feature y Maintenance ya usan runs/<slug>/ tal cual.
+          $unitDir = $slug
+          if ($mode -eq 'Milestone') {
+            $unitDir = "milestone-$slug"
+          }
+          $evidenceDir = "$runRoot/$unitDir"
+
           ./scripts/complete-approved-pr.ps1 `
-            -Slug '${{ steps.feature.outputs.slug }}' `
+            -Slug $slug `
             -Branch '${{ steps.feature.outputs.branch }}' `
-            -Mode '${{ steps.feature.outputs.mode }}' `
-            -Version '${{ steps.feature.outputs.version }}' `
+            -Mode $mode `
+            -Version $version `
             -PrNumber ${{ github.event.pull_request.number }} `
             -SkipLocalCleanup `
             -CommentOnFailure `
             -GovernanceMode SingleMaintainer `
             -PreAuthorizedHumanMerge `
-            -AuthorizationPath "$run_root/${{ steps.feature.outputs.slug }}/human-authorization.md" `
-            -IndependentReviewPath "$run_root/${{ steps.feature.outputs.slug }}/independent-review.md" `
-            -IntegrityEvidencePath "$run_root/${{ steps.feature.outputs.slug }}/integrity-evidence.md"
+            -AuthorizationPath "$evidenceDir/human-authorization.md" `
+            -IndependentReviewPath "$evidenceDir/independent-review.md" `
+            -IntegrityEvidencePath "$evidenceDir/integrity-evidence.md"
