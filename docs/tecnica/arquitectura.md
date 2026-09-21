@@ -375,3 +375,24 @@ y árbol exactos. La integración se hace por PR de gobernanza desde develop,
 sin tocar main ni tags. No se cambia el modelo snapshot de adopción ni se
 migra automáticamente ningún proyecto consumidor. Se descarta reemplazar
 ahora scripts maduros: no existe evidencia comparativa que lo justifique.
+
+## Decisión: fundación de GI-COMMON-CRM
+
+La procedencia del circuito es Template v2.0.1 (snapshot del commit `bfd363f`
+de `template-starter`, sin historia, releases, tags ni evidencia particular
+copiada). Sus decisiones históricas — incluidas las anteriores en este mismo
+documento — son referencias del motor, no funcionalidades de CRM. El diseño
+de producto y stack propuesto se encuentra en
+[Arquitectura de CRM](arquitectura-crm.md). En este bootstrap se incorpora
+documentación y circuito; no backend, base de datos, integración desplegada
+ni dependencia de runtime de producto.
+
+Corrección aplicada durante la unidad `01-fundacion-diseno`: la rama `main`
+se creó y publicó al momento del snapshot inicial, antes de cualquier
+release — en contradicción con la "Decisión: ciclo de vida de `main`"
+heredada más arriba en este mismo documento (creación condicionada a la
+primera release aprobada). Se corrigió eliminando `main` local y remota y
+fijando `develop` como rama por defecto del repositorio, dejando a
+GI-COMMON-CRM sin rama `main` hasta que exista una decisión humana real de
+release, igual que el resto del ciclo de vida documentado para el
+ecosistema GI.
