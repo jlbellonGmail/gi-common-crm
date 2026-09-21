@@ -1,0 +1,56 @@
+"""Ports; no persistence or transport leaks into the domain.
+
+Protocols locales: gi_crm no importa gi_platform_core ni gi_persons como
+dependencia dura (ver ADR-C01/ADR-C02 en docs/tecnica/arquitectura-crm.md).
+Una implementación real de CoreApi/PersonsApi ya calza por forma (duck
+typing).
+"""
+from typing import Protocol
+from uuid import UUID
+
+from .models import LeadAudit
+
+
+class CoreApi(Protocol):
+    def authorize(
+        self,
+        user_id: str,
+        organization_id: str,
+        permission: str,
+        location_id: str | None = None,
+    ) -> dict: ...
+
+
+class PersonsApi(Protocol):
+    def find_duplicate_candidates(self, context, *, keys, limit: int = 20) -> dict: ...
+    def get_person(self, context, person_id) -> dict: ...
+    def create_person(self, context, **data) -> dict: ...
+
+
+class AuditSink(Protocol):
+    def append(self, event: LeadAudit) -> None: ...
+
+
+class LeadStore(Protocol):
+    def create_lead(self, lead): ...
+    def get_lead(self, organization_id: str, lead_id: UUID): ...
+    def list_leads(
+        self,
+        organization_id: str,
+        *,
+        status: str | None = None,
+        owner_user_id: str | None = None,
+        source_id: UUID | None = None,
+        person_id: UUID | None = None,
+        limit: int,
+        after: UUID | None = None,
+    ) -> list: ...
+    def update_lead(self, lead, expected_version: int): ...
+    def append_status_event(self, event) -> None: ...
+    def list_status_events(self, organization_id: str, lead_id: UUID) -> list: ...
+    def append_activity(self, activity): ...
+    def list_activities(self, organization_id: str, lead_id: UUID) -> list: ...
+    def append_assignment(self, event) -> None: ...
+    def list_assignments(self, organization_id: str, lead_id: UUID) -> list: ...
+    def add_external_reference(self, reference): ...
+    def list_external_references(self, organization_id: str, lead_id: UUID) -> list: ...
