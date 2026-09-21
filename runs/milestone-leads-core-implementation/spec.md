@@ -65,10 +65,12 @@ Incluye, por ítem (dependencias según `plan-crm.md`):
 También incluye pruebas reales contra PostgreSQL efímero (Docker local,
 `@pytest.mark.integration` activada por `CRM_TEST_DATABASE_URL`, mismo
 patrón que `PERSONS_TEST_DATABASE_URL` en `gi-common-persons`) y la
-documentación técnica/de usuario correspondiente
-(`docs/tecnica/modelo-datos-crm.md`, `docs/tecnica/contrato-core.md`,
-`docs/tecnica/contrato-persons.md`, `docs/tecnica/api-publica-crm.md`,
-`docs/tecnica/ciclo-vida-leads.md` y sus equivalentes en `docs/usuario/`).
+documentación técnica/de usuario de cada ítem del manifest
+(`docs/tecnica/<docSlug>.md`/`docs/usuario/<docSlug>.md` para
+`02-contratos-integracion`, `03-dominio-leads`,
+`04-persistencia-aislamiento`, `05-api-publica`,
+`06-seguimiento-multivertical` — el nombre real lo deriva
+`Get-WorkUnitInfo -Mode Feature` por ítem, no un nombre libre por tema).
 
 **Fuera de alcance** (explícitamente, por decisión ya registrada):
 

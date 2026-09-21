@@ -34,8 +34,11 @@ append_assignment/add_external_reference/candidates). Helper
 `ForbiddenError`/`CoreUnavailableError` — nunca permite por defecto.
 Fakes de test (`FakeCoreApi`, `FakePersonsApi`) en `tests_crm/fakes.py`.
 Adaptadores `adapters/core_http.py`/`adapters/persons_http.py` contra el
-contrato documentado en `docs/tecnica/contrato-core.md`/
-`contrato-persons.md`, con docstring explícito de bloqueo end-to-end.
+contrato documentado en `docs/tecnica/contratos-integracion.md` (nombre
+real derivado de `Get-WorkUnitInfo -Mode Feature` para el ítem
+`02-contratos-integracion`, no el `contrato-core.md`/`contrato-persons.md`
+originalmente asumido aquí — ver corrección en el Paso 8), con docstring
+explícito de bloqueo end-to-end.
 
 ### Paso 3 — `gi_crm/service.py`, `gi_crm/memory.py` (ítem 03)
 
@@ -112,14 +115,22 @@ contrario.
 
 ### Paso 8 — Documentación
 
-`docs/tecnica/modelo-datos-crm.md` (esquema real, RLS, triggers),
-`docs/tecnica/contrato-core.md`/`contrato-persons.md` (contrato HTTP
-documentado + estado bloqueado), `docs/tecnica/api-publica-crm.md`
-(`LeadsApi` + HTTP + OpenAPI), `docs/tecnica/ciclo-vida-leads.md` (máquina
-de estados), y sus equivalentes en `docs/usuario/`. Actualizar
-`docs/tecnica/index.md`/`docs/usuario/index.md` vía
-`update-doc-indexes.ps1` (Milestone sí soporta indexado, a diferencia de
-Maintenance).
+Corrección de alcance respecto a lo asumido al redactar este plan: en
+`Mode = "Milestone"`, `Get-WorkUnitInfo` (`scripts/workunit-lib.ps1`)
+resuelve `Items = @($itemSlugs | Get-WorkUnitInfo -Mode Feature)` — cada
+ítem del manifest exige su **propio** `docs/tecnica/<docSlug>.md` y
+`docs/usuario/<docSlug>.md` (`docSlug` = slug del ítem sin el prefijo
+`NN-`), no un puñado de documentos libres por tema. Los nombres reales
+son: `docs/tecnica/contratos-integracion.md` (puertos, contrato HTTP
+documentado + estado bloqueado), `docs/tecnica/dominio-leads.md` (modelo,
+máquina de estados), `docs/tecnica/persistencia-aislamiento.md` (esquema
+real, RLS, triggers), `docs/tecnica/api-publica.md` (`LeadsApi` + HTTP +
+OpenAPI), `docs/tecnica/seguimiento-multivertical.md` (actividad,
+asignación, conversión) — y sus equivalentes en `docs/usuario/`, con el
+mismo `docSlug`. Cada uno se registra por separado con
+`update-doc-indexes.ps1 -Slug <item> -Title <título>`: el script no tiene
+`-Mode Milestone`, contrario a lo asumido aquí originalmente; se invoca
+una vez por ítem del milestone.
 
 ## Validaciones antes de PR
 

@@ -5,6 +5,9 @@ __pycache__/
 .pytest-tmp/
 .venv/
 venv/
+*.egg-info/
+build/
+dist/
 
 # Node.js (si el proyecto real incorpora backend/tooling en Node)
 node_modules/

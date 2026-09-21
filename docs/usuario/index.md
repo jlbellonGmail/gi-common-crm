@@ -31,5 +31,10 @@ fuente canónica, regenerar adaptadores y declarar modelos por ejecución.
 - [Unidades y paralelización](unidades-paralelizacion.md)
 - [Validacion integral v2](validacion-integral-v2.md)
 - [[v2.0.0][F17] Auditoría final y release v2.0.0](auditoria-release-v2.md)
+- [Contratos e integración (CoreApi/PersonsApi)](contratos-integracion.md)
+- [Dominio de Leads](dominio-leads.md)
+- [Persistencia y aislamiento](persistencia-aislamiento.md)
+- [API pública](api-publica.md)
+- [Seguimiento multivertical](seguimiento-multivertical.md)
 
 <!-- FEATURE_LINKS_END -->
