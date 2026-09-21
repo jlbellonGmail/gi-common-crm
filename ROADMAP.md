@@ -8,11 +8,11 @@ bootstrap no cierra ninguna por sí mismo.
 ## Backlog
 
 - [x] 01-fundacion-diseno — consolidar decisiones, procedencia, contratos reales de Core/Persons y arquitectura del dominio CRM; adoptar el circuito.
-- [ ] 02-contratos-integracion — puertos locales `CoreApi`/`PersonsApi`, adaptadores de biblioteca y de HTTP (HTTP documentado y marcado bloqueado hasta que Core/Persons lo desplieguen), fakes de prueba.
-- [ ] 03-dominio-leads — modelos de dominio, `LeadService`, máquina de estados comerciales validada, detección de duplicados, concurrencia optimista.
-- [ ] 04-persistencia-aislamiento — esquema SQL `crm.*`, RLS por organización, `PostgresLeadStore`, `InMemoryLeadStore`, pruebas reales contra PostgreSQL efímero.
-- [ ] 05-api-publica — `LeadsApi` de biblioteca (paginación por cursor, errores JSON-safe) y API HTTP versionada con OpenAPI.
-- [ ] 06-seguimiento-multivertical — actividades, asignación/reasignación, historial comercial y referencias de conversión para verticales, sin acoplar CRM a ninguna.
+- [-] 02-contratos-integracion — puertos locales `CoreApi`/`PersonsApi`, adaptadores de biblioteca y de HTTP (HTTP documentado y marcado bloqueado hasta que Core/Persons lo desplieguen), fakes de prueba.
+- [-] 03-dominio-leads — modelos de dominio, `LeadService`, máquina de estados comerciales validada, detección de duplicados, concurrencia optimista.
+- [-] 04-persistencia-aislamiento — esquema SQL `crm.*`, RLS por organización, `PostgresLeadStore`, `InMemoryLeadStore`, pruebas reales contra PostgreSQL efímero.
+- [-] 05-api-publica — `LeadsApi` de biblioteca (paginación por cursor, errores JSON-safe) y API HTTP versionada con OpenAPI.
+- [-] 06-seguimiento-multivertical — actividades, asignación/reasignación, historial comercial y referencias de conversión para verticales, sin acoplar CRM a ninguna.
 - [ ] 07-readiness-integracion — CI real (product-tests deja de ser placeholder), documentación completa, supply-chain, evidencia para HITL de release.
 - [ ] 08-persistencia-supabase-real — desplegar y verificar la migración `crm.*` en el proyecto Supabase real compartido con Core/Persons. Requiere autorización humana explícita antes de iniciarse, no sólo en el merge: toca infraestructura ajena en uso.
 
@@ -31,5 +31,6 @@ tag ni una release en este documento.
 - [AGENTS](AGENTS.md) — operación del circuito.
 - [STATUS](STATUS.md) — estado actual para reentrada.
 - [Contexto de producto](docs/producto/contexto-producto.md) — conocimiento funcional persistente.
+
 
 
