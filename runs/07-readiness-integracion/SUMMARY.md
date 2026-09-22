@@ -79,7 +79,7 @@ test independientes que asumían el placeholder.
   manual con Docker local.
 - No se decide ni publica ninguna release de `v0.1.0` desde esta unidad.
 
-## Incidencias / hallazgos
+## Incidencias
 
 - **`tests/test_ci_integration.py`** tenía una segunda aserción
   independiente sobre el placeholder, no anticipada en `spec.md` inicial;
