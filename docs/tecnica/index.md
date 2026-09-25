@@ -1,5 +1,7 @@
 # Documentación técnica
 
+- [Persistencia Supabase real](persistencia-supabase-real.md)
+
 Un archivo por feature, agregado al implementarse mediante el circuito
 de agentes descrito en `AGENTS.md`: decisiones de diseño, implementación
 y casos borde.
