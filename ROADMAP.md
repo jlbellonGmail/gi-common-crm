@@ -15,7 +15,7 @@ bootstrap no cierra ninguna por sí mismo.
 - [x] 06-seguimiento-multivertical — actividades, asignación/reasignación, historial comercial y referencias de conversión para verticales, sin acoplar CRM a ninguna.
 - [x] 07-readiness-integracion — CI real (product-tests deja de ser placeholder), documentación completa, supply-chain, evidencia para HITL de release.
 - [x] 08-persistencia-supabase-real — desplegar y verificar la migración `crm.*` en el proyecto Supabase real compartido con Core/Persons. Requiere autorización humana explícita antes de iniciarse, no sólo en el merge: toca infraestructura ajena en uso.
-- [ ] 09-maintenance-release-readiness-project-scope — corregir el gate de release para que evalúe el alcance y la evidencia reales del proyecto, sin exigir unidades transversales del Template que no pertenecen al backlog CRM.
+- [x] 09-maintenance-release-readiness-project-scope — corregir el gate de release para que evalúe el alcance y la evidencia reales del proyecto, sin exigir unidades transversales del Template que no pertenecen al backlog CRM.
 
 02 a 06 se ejecutan como un único Milestone (`leads-core-implementation`)
 por su interdependencia directa, igual que hizo GI-COMMON-PERSONS con sus
