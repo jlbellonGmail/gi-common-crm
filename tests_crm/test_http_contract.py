@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 from gi_crm.api import LeadsApi  # noqa: E402
 from gi_crm.http.app import create_app  # noqa: E402
 
-HEADERS = {"X-GI-User-Id": "user-a", "X-GI-Organization-Id": "org-a"}
+HEADERS = {"X-GI-User-Id": "user-a", "X-GI-Tenant-Id": "00000000-0000-0000-0000-00000000000a"}
 
 
 @pytest.fixture

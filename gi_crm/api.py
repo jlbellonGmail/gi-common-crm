@@ -44,7 +44,7 @@ class CursorCodec:
 def summary(lead):
     return json_value({
         "contract_version": CONTRACT_VERSION,
-        "organization_id": lead.organization_id,
+        "tenant_id": lead.tenant_id,
         "lead_id": lead.lead_id,
         "status": lead.status,
         "person_id": lead.person_id,
@@ -120,7 +120,7 @@ class LeadsApi:
         return summary(self.service.get_lead(context, UUID(str(lead_id))))
 
     def list_leads(self, context, *, limit=20, cursor=None, filters=""):
-        after = self.cursors.decode(context.organization_id, filters, cursor) if cursor else None
+        after = self.cursors.decode(context.tenant_id, filters, cursor) if cursor else None
         items = self.service.list_leads(context, limit=limit + 1, after=after)
         more = len(items) > limit
         items = items[:limit]
@@ -128,7 +128,7 @@ class LeadsApi:
             "contract_version": CONTRACT_VERSION,
             "items": [summary(lead) for lead in items],
             "next_cursor": (
-                self.cursors.encode(context.organization_id, filters, items[-1].lead_id)
+                self.cursors.encode(context.tenant_id, filters, items[-1].lead_id)
                 if more and items else None
             ),
         }

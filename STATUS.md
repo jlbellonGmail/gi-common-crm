@@ -177,15 +177,15 @@ no se corrige en esta unidad por alcance.
 
 ## Estado verificado automáticamente
 
-- Actualizado: 2026-09-21T14:44:15Z
+- Actualizado: 2026-09-25T12:14:59Z
 - Versión: unreleased
-- Rama: develop
-- HEAD: d2af72f8c0dd110940146bca466df3a868b16a0b
+- Rama: feature/08-persistencia-supabase-real
+- HEAD: 2a24800297a17a3c12e9ed8c05f60b7334296613
 - Remoto: https://github.com/jlbellonGmail/gi-common-crm.git
 - Working tree: dirty
-- Worktrees: 3
-- Worktrees Git: 3
-- Unidades activas: ninguna
+- Worktrees: 2
+- Worktrees Git: 2
+- Unidades activas: = [feature/08-persistencia-supabase-real]
 - PR activa: UNKNOWN / sin PR abierta
 - CI: UNKNOWN / sin CI verificable
 - CI vigente: UNKNOWN / sin CI verificable

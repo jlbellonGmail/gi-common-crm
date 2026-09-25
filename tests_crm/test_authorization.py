@@ -29,12 +29,12 @@ def test_unsupported_contract_version_is_rejected(ctx_a):
 
 def test_context_echo_mismatch_is_forbidden(ctx_a):
     class TamperingCoreApi:
-        def authorize(self, user_id, organization_id, permission, location_id=None):
+        def authorize(self, user_id, tenant_id, permission, location_id=None):
             return {
                 "contract_version": "0.1.0",
                 "allowed": True,
                 "reason": None,
-                "context": {"user_id": "someone-else", "organization_id": organization_id},
+                "context": {"user_id": "someone-else", "tenant_id": tenant_id},
             }
 
     service = LeadService(InMemoryLeadStore(), TamperingCoreApi())
@@ -43,13 +43,13 @@ def test_context_echo_mismatch_is_forbidden(ctx_a):
 
 
 def test_authorize_is_called_with_location_id_when_present():
-    ctx = RequestContext(user_id="user-a", organization_id="org-a", location_id="loc-1")
+    ctx = RequestContext(user_id="user-a", tenant_id="00000000-0000-0000-0000-00000000000a", location_id="loc-1")
     core = FakeCoreApi(allow=True)
     service = LeadService(InMemoryLeadStore(), core)
     service.create_lead(ctx, title="Lead")
-    assert core.calls[0] == ("user-a", "org-a", "crm:lead:write", "loc-1")
+    assert core.calls[0] == ("user-a", "00000000-0000-0000-0000-00000000000a", "crm:lead:write", "loc-1")
 
 
 def test_trusted_context_is_required():
     with pytest.raises(ValueError):
-        RequestContext(user_id="user-a", organization_id="org-a", trusted=False)
+        RequestContext(user_id="user-a", tenant_id="00000000-0000-0000-0000-00000000000a", trusted=False)

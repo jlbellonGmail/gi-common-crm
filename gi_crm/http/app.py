@@ -1,7 +1,7 @@
 """API HTTP versionada de gi_crm (extra `[http]`).
 
 Contexto de tenant por cabeceras confiables (`X-GI-User-Id`,
-`X-GI-Organization-Id`, `X-GI-Location-Id`) inyectadas por el host/proxy
+`X-GI-Tenant-Id`, `X-GI-Location-Id`) inyectadas por el host/proxy
 autenticado -- mismo supuesto interino que `RequestContext(trusted=True)`
 en la biblioteca (ver ADR-C05/ADR-C03 en docs/tecnica/arquitectura-crm.md).
 Esta app no reimplementa reglas de negocio: delega íntegramente en
@@ -31,7 +31,7 @@ def create_app(leads_api) -> FastAPI:
 
     def get_context(
         x_gi_user_id: str | None = Header(None),
-        x_gi_organization_id: str | None = Header(None),
+        x_gi_tenant_id: str | None = Header(None),
         x_gi_location_id: str | None = Header(None),
     ) -> RequestContext:
         # Cabeceras opcionales a nivel de FastAPI para que la falta de
@@ -39,7 +39,7 @@ def create_app(leads_api) -> FastAPI:
         # fail-safe), no en el 422 genérico de validación de Pydantic.
         try:
             return RequestContext(
-                user_id=x_gi_user_id, organization_id=x_gi_organization_id, location_id=x_gi_location_id,
+                user_id=x_gi_user_id, tenant_id=x_gi_tenant_id, location_id=x_gi_location_id,
             )
         except (ValueError, TypeError) as exc:
             raise HTTPException(status_code=400, detail="missing trusted context headers") from exc

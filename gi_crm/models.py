@@ -29,20 +29,20 @@ VALID_TRANSITIONS: dict[str, frozenset[str]] = {
 @dataclass(frozen=True, slots=True)
 class RequestContext:
     user_id: str
-    organization_id: str
+    tenant_id: str
     location_id: str | None = None
     correlation_id: str = field(default_factory=lambda: str(uuid4()))
     trusted: bool = True
 
     def __post_init__(self):
-        if not self.trusted or not self.user_id or not self.organization_id:
-            raise ValueError("context must be trusted and identify user and organization")
+        if not self.trusted or not self.user_id or not self.tenant_id:
+            raise ValueError("context must be trusted and identify user and tenant")
 
 
 @dataclass(frozen=True, slots=True)
 class LeadSource:
     source_id: UUID
-    organization_id: str
+    tenant_id: str
     code: str
     label: str
     active: bool = True
@@ -52,7 +52,7 @@ class LeadSource:
 @dataclass(frozen=True, slots=True)
 class Lead:
     lead_id: UUID
-    organization_id: str
+    tenant_id: str
     status: str = "new"
     person_id: UUID | None = None
     source_id: UUID | None = None
@@ -68,7 +68,7 @@ class Lead:
 @dataclass(frozen=True, slots=True)
 class LeadStatusEvent:
     event_id: UUID
-    organization_id: str
+    tenant_id: str
     lead_id: UUID
     from_status: str | None
     to_status: str
@@ -80,7 +80,7 @@ class LeadStatusEvent:
 @dataclass(frozen=True, slots=True)
 class LeadActivity:
     activity_id: UUID
-    organization_id: str
+    tenant_id: str
     lead_id: UUID
     actor_user_id: str
     kind: str
@@ -91,7 +91,7 @@ class LeadActivity:
 @dataclass(frozen=True, slots=True)
 class LeadAssignmentEvent:
     assignment_id: UUID
-    organization_id: str
+    tenant_id: str
     lead_id: UUID
     from_user_id: str | None
     to_user_id: str
@@ -102,7 +102,7 @@ class LeadAssignmentEvent:
 @dataclass(frozen=True, slots=True)
 class LeadExternalReference:
     reference_id: UUID
-    organization_id: str
+    tenant_id: str
     lead_id: UUID
     vertical_code: str
     external_type: str
@@ -113,7 +113,7 @@ class LeadExternalReference:
 @dataclass(frozen=True, slots=True)
 class LeadAudit:
     audit_id: UUID
-    organization_id: str
+    tenant_id: str
     lead_id: UUID | None
     actor_user_id: str
     action: str

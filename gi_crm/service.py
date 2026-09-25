@@ -39,7 +39,7 @@ class LeadService:
 
     def _audit(self, ctx, lead_id, action, outcome, version):
         event = LeadAudit(
-            uuid4(), ctx.organization_id, lead_id, ctx.user_id, action,
+            uuid4(), ctx.tenant_id, lead_id, ctx.user_id, action,
             utcnow(), ctx.correlation_id, outcome, version,
         )
         try:
@@ -63,7 +63,7 @@ class LeadService:
         if not isinstance(title, str) or not title.strip() or len(title) > 200:
             raise ValidationError()
         lead = Lead(
-            uuid4(), ctx.organization_id, "new",
+            uuid4(), ctx.tenant_id, "new",
             self._uuid(person_id) if person_id else None,
             self._uuid(source_id) if source_id else None,
             owner_user_id, title.strip(), description,
@@ -75,7 +75,7 @@ class LeadService:
 
     def get_lead(self, ctx, lead_id):
         self.auth.require(ctx, "crm:lead:read")
-        lead = self.store.get_lead(ctx.organization_id, self._uuid(lead_id))
+        lead = self.store.get_lead(ctx.tenant_id, self._uuid(lead_id))
         if lead is None:
             raise NotFoundError()
         return lead
@@ -85,7 +85,7 @@ class LeadService:
         if limit < 1 or limit > 101:
             raise ValidationError()
         return self.store.list_leads(
-            ctx.organization_id,
+            ctx.tenant_id,
             status=status,
             owner_user_id=owner_user_id,
             source_id=self._uuid(source_id) if source_id else None,
@@ -117,7 +117,7 @@ class LeadService:
             raise InvalidTransitionError()
         close_reason = reason if to_status in ("won", "lost") else current.close_reason
         updated = replace(current, status=to_status, close_reason=close_reason)
-        event = LeadStatusEvent(uuid4(), ctx.organization_id, self._uuid(lead_id), current.status, to_status, ctx.user_id, reason=reason)
+        event = LeadStatusEvent(uuid4(), ctx.tenant_id, self._uuid(lead_id), current.status, to_status, ctx.user_id, reason=reason)
         with self._transaction():
             result = self.store.update_lead(updated, expected_version)
             self.store.append_status_event(event)
@@ -132,7 +132,7 @@ class LeadService:
     def list_status_history(self, ctx, lead_id):
         self.auth.require(ctx, "crm:lead:read")
         self.get_lead(ctx, lead_id)
-        return self.store.list_status_events(ctx.organization_id, self._uuid(lead_id))
+        return self.store.list_status_events(ctx.tenant_id, self._uuid(lead_id))
 
     # -- Asignación -------------------------------------------------------
 
@@ -142,7 +142,7 @@ class LeadService:
         if not to_user_id:
             raise ValidationError()
         updated = replace(current, owner_user_id=to_user_id)
-        event = LeadAssignmentEvent(uuid4(), ctx.organization_id, self._uuid(lead_id), current.owner_user_id, to_user_id, ctx.user_id)
+        event = LeadAssignmentEvent(uuid4(), ctx.tenant_id, self._uuid(lead_id), current.owner_user_id, to_user_id, ctx.user_id)
         with self._transaction():
             result = self.store.update_lead(updated, expected_version)
             self.store.append_assignment(event)
@@ -155,7 +155,7 @@ class LeadService:
     def list_assignments(self, ctx, lead_id):
         self.auth.require(ctx, "crm:lead:read")
         self.get_lead(ctx, lead_id)
-        return self.store.list_assignments(ctx.organization_id, self._uuid(lead_id))
+        return self.store.list_assignments(ctx.tenant_id, self._uuid(lead_id))
 
     # -- Actividad --------------------------------------------------------
 
@@ -164,7 +164,7 @@ class LeadService:
         self.get_lead(ctx, lead_id)
         if kind not in ACTIVITY_KINDS:
             raise ValidationError()
-        activity = LeadActivity(uuid4(), ctx.organization_id, self._uuid(lead_id), ctx.user_id, kind, notes)
+        activity = LeadActivity(uuid4(), ctx.tenant_id, self._uuid(lead_id), ctx.user_id, kind, notes)
         with self._transaction():
             result = self.store.append_activity(activity)
             self._audit(ctx, lead_id, "lead.activity.add", "success", None)
@@ -173,7 +173,7 @@ class LeadService:
     def list_activities(self, ctx, lead_id):
         self.auth.require(ctx, "crm:lead:activity:read")
         self.get_lead(ctx, lead_id)
-        return self.store.list_activities(ctx.organization_id, self._uuid(lead_id))
+        return self.store.list_activities(ctx.tenant_id, self._uuid(lead_id))
 
     # -- Persons: vínculo y duplicados -------------------------------------
 
@@ -208,7 +208,7 @@ class LeadService:
         self.get_lead(ctx, lead_id)
         if not vertical_code or not external_type or not external_id:
             raise ValidationError()
-        reference = LeadExternalReference(uuid4(), ctx.organization_id, self._uuid(lead_id), vertical_code, external_type, external_id)
+        reference = LeadExternalReference(uuid4(), ctx.tenant_id, self._uuid(lead_id), vertical_code, external_type, external_id)
         with self._transaction():
             result = self.store.add_external_reference(reference)
             self._audit(ctx, lead_id, "lead.external_reference.add", "success", None)
@@ -217,7 +217,7 @@ class LeadService:
     def list_external_references(self, ctx, lead_id):
         self.auth.require(ctx, "crm:lead:read")
         self.get_lead(ctx, lead_id)
-        return self.store.list_external_references(ctx.organization_id, self._uuid(lead_id))
+        return self.store.list_external_references(ctx.tenant_id, self._uuid(lead_id))
 
     def convert_lead(self, ctx, lead_id, *, vertical_code, external_type, external_id):
         self.auth.require(ctx, "crm:lead:convert:write")
@@ -226,7 +226,7 @@ class LeadService:
             raise InvalidTransitionError()
         if not vertical_code or not external_type or not external_id:
             raise ValidationError()
-        reference = LeadExternalReference(uuid4(), ctx.organization_id, self._uuid(lead_id), vertical_code, external_type, external_id)
+        reference = LeadExternalReference(uuid4(), ctx.tenant_id, self._uuid(lead_id), vertical_code, external_type, external_id)
         with self._transaction():
             result = self.store.add_external_reference(reference)
             self._audit(ctx, lead_id, "lead.convert", "success", current.version)

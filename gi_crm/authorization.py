@@ -13,7 +13,7 @@ class Authorizer:
     def require(self, context: RequestContext, permission: str) -> None:
         try:
             response = self.api.authorize(
-                context.user_id, context.organization_id, permission, context.location_id
+                context.user_id, context.tenant_id, permission, context.location_id
             )
         except Exception as exc:
             # CoreError concreto no se reemite: el llamador recibe una
@@ -28,6 +28,6 @@ class Authorizer:
         if (
             not isinstance(returned, dict)
             or returned.get("user_id") != context.user_id
-            or returned.get("organization_id") != context.organization_id
+            or returned.get("tenant_id") != context.tenant_id
         ):
             raise ForbiddenError()
