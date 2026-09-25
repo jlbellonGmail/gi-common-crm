@@ -177,18 +177,18 @@ no se corrige en esta unidad por alcance.
 
 ## Estado verificado automáticamente
 
-- Actualizado: 2026-09-25T14:30:52Z
+- Actualizado: 2026-09-25T14:38:27Z
 - Versión: unreleased
 - Rama: develop
-- HEAD: 67d7fe4544800194073d3b38a4d8de9af7d7e4e1
+- HEAD: fad7ba372e11008b800e647ba43a039e891a02a4
 - Remoto: https://github.com/jlbellonGmail/gi-common-crm.git
 - Working tree: dirty
 - Worktrees: 3
 - Worktrees Git: 3
 - Unidades activas: ninguna
 - PR activa: UNKNOWN / sin PR abierta
-- CI: failure @ 67d7fe4544800194073d3b38a4d8de9af7d7e4e1
-- CI vigente: failure @ 67d7fe4544800194073d3b38a4d8de9af7d7e4e1
+- CI: failure @ fad7ba372e11008b800e647ba43a039e891a02a4
+- CI vigente: failure @ fad7ba372e11008b800e647ba43a039e891a02a4
 - Última release: UNKNOWN / no disponible
 
 <!-- STATUS:AUTO:END -->
