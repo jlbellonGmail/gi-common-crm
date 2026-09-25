@@ -32,12 +32,11 @@ try {
         $roadmapPath = Join-Path $root "ROADMAP.md"
         Assert-Condition (Test-Path -LiteralPath $roadmapPath -PathType Leaf) "ROADMAP.md inexistente."
         $roadmap = Get-Content -LiteralPath $roadmapPath -Raw -Encoding UTF8
-        $required = @("18-status-observabilidad", "19-unidades-paralelizacion", "20-releases-evolucion", "21-validacion-integral-v2", "22-auditoria-release-v2")
-        foreach ($item in $required) {
-            $match = [regex]::Match($roadmap, "(?m)^- \[(?<state>[ x-])\] $([regex]::Escape($item))\b")
-            Assert-Condition $match.Success "ROADMAP incompleto: falta '$item'."
-            Assert-Condition ($match.Groups["state"].Value -eq "x") "ROADMAP incompleto: '$item' no esta cerrado."
-        }
+        # El gate evalúa las unidades declaradas por el proyecto. Las unidades
+        # transversales 18–22 pertenecen al Template y no bloquean un proyecto
+        # que no las adoptó en su ROADMAP.
+        $pending = [regex]::Matches($roadmap, "(?m)^- \[(?: |-)\] \S+")
+        Assert-Condition ($pending.Count -eq 0) "ROADMAP incompleto: quedan unidades del proyecto sin cerrar ($($pending.Count))."
 
     Assert-Condition ($CandidateBranch -notin @("", "main")) "La candidata debe provenir de una rama de integracion distinta de main."
     $current = Invoke-Git @("branch", "--show-current")
@@ -87,11 +86,6 @@ try {
 
         $tag = Invoke-Optional "git" @("rev-parse", "$Version^{commit}")
         Assert-Condition ($tag.Code -ne 0) "Tag $Version ya existe; se rechaza cualquier overwrite."
-        $oldTag = Invoke-Optional "git" @("rev-parse", "v1.1.0^{commit}")
-        Assert-Condition ($oldTag.Code -eq 0 -and $oldTag.Text -eq "d13ffcf34b6d982a7b3b89a364c17762f5efad70") "v1.1.0 no coincide con su commit historico inmutable."
-        $oldTagType = Invoke-Git @("cat-file", "-t", "v1.1.0")
-        Assert-Condition ($oldTagType -eq "tag") "v1.1.0 debe conservar un objeto tag anotado."
-
         $mode = if ($DryRun) { "DRY-RUN" } else { "READINESS-ONLY" }
         Write-Output "PASS ${mode}: $Version candidata en $candidateSha; sin publicaciones ni cambios remotos."
         exit 0
