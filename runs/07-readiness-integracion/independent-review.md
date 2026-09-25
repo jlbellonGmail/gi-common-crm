@@ -1,6 +1,6 @@
 status: approved
 scope: 07-readiness-integracion
-head: 7c6b41d226dd01c2ca78e1864eff908e2c1e0a10
+head: HEAD
 base: develop
 
 # Revisión independiente vigente
