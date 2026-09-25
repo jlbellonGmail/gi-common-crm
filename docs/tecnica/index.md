@@ -9,5 +9,5 @@ Fuente de documentación técnica del circuito y del producto CRM.
 - [API Pública](api-publica.md)
 - [Seguimiento Multivertical](seguimiento-multivertical.md)
 - [Readiness e integración](readiness-integracion.md)
-- [Persistencia Supabase real](persistencia-supabase-real.md)
+- [persistencia-supabase-real](persistencia-supabase-real.md)
 <!-- FEATURE_LINKS_END -->
