@@ -51,6 +51,9 @@
       `template-starter`, no de `gi-common-crm` — ver ese archivo).
 - [x] `SUMMARY.md`, `audit-1.md`, `test-report-1.md`, `code-review-1.md`
       de esta unidad.
-- [ ] `ready-for-pr.ps1` corrido con éxito; PR abierta contra `develop`.
-- [ ] CI real verde en la PR (`gh pr checks`), confirmado, no inferido.
+- [x] `ready-for-pr.ps1` corrido con éxito; PR #4 abierta contra `develop`
+      (`https://github.com/jlbellonGmail/gi-common-crm/pull/4`).
+- [x] CI real verde en la PR (`gh pr checks 4`), confirmado, no inferido:
+      `circuit-tests` pass (3m30s), `local-reconciler-tests` pass (38s),
+      `product-tests` pass (31s) — run `35671775612`.
 - [ ] HITL de merge: detenerse, informar, esperar decisión humana.

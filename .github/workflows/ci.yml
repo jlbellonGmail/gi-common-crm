@@ -38,7 +38,7 @@ jobs:
 
   # Stack de producto documentado en docs/tecnica/arquitectura-crm.md
   # (ADR-C02): paquete Python gi_crm, extras opcionales [http]/[postgres].
-  # Ver docs/tecnica/ci-real-product-tests.md para el detalle de este job
+  # Ver docs/tecnica/readiness-integracion.md para el detalle de este job
   # y por que reemplaza al placeholder heredado del template (ver tambien
   # docs/tecnica/ci-wiring-product-tests.md, feature historica del
   # template que introdujo ese placeholder).

@@ -1,11 +1,11 @@
 # 07-readiness-integracion — CI real, supply-chain y evidencia de release
 
-Estado: READY_FOR_PR (pendiente `ready-for-pr.ps1`, apertura de PR y CI
-real en la PR)
+Estado: READY_FOR_PR (PR abierta, CI real en verde, pendiente HITL de
+merge)
 Versión: legacy (sin `-Version` de work unit)
 Tipo: Feature
 SDD: FULL (ASSESS: `HIGH`)
-PR: no creada todavía
+PR: https://github.com/jlbellonGmail/gi-common-crm/pull/4
 Merge: no realizado
 
 ## Objetivo
@@ -66,6 +66,13 @@ test independientes que asumían el placeholder.
   (script parametrizado para el ROADMAP/tag histórico de
   `template-starter`, no de este repositorio — ver hallazgo abajo).
 - `code-review-1.md`: `approved`, sin hallazgos bloqueantes.
+- PR #4 (`feature/07-readiness-integracion` → `develop`), CI real verde
+  confirmado con `gh pr checks 4` (no inferido): `circuit-tests` pass
+  (3m30s), `local-reconciler-tests` pass (38s), `product-tests` pass
+  (31s) — run `35671775612`. Corrección menor adicional tras abrir la PR:
+  comentario en `.github/workflows/ci.yml` seguía referenciando el nombre
+  de archivo previo a la renombrada de Paso 5 (`ci-real-product-tests.md`
+  en vez de `readiness-integracion.md`); corregido.
 
 ## Decisiones
 
