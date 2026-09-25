@@ -8,15 +8,15 @@ class FakeCoreApi:
         self.fail = fail
         self.calls = []
 
-    def authorize(self, user_id, organization_id, permission, location_id=None):
-        self.calls.append((user_id, organization_id, permission, location_id))
+    def authorize(self, user_id, tenant_id, permission, location_id=None):
+        self.calls.append((user_id, tenant_id, permission, location_id))
         if self.fail:
             raise RuntimeError("core unavailable (simulated)")
         return {
             "contract_version": self.contract_version,
             "allowed": self.allow,
             "reason": None if self.allow else "denied",
-            "context": {"user_id": user_id, "organization_id": organization_id},
+            "context": {"user_id": user_id, "tenant_id": tenant_id},
         }
 
 

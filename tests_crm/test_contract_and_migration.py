@@ -20,9 +20,9 @@ def test_migration_has_crm_schema_tenant_keys_and_forced_rls():
         "lead_source", "lead", "lead_status_event", "lead_activity",
         "lead_assignment_event", "lead_external_reference", "lead_audit",
     ]:
-        assert f"create table if not exists crm.{table}" in sql
-    assert "unique (organization_id, vertical_code, external_type, external_id)" in sql
+        assert f"create table crm.{table}" in sql
+    assert "unique (tenant_id, vertical_code, external_type, external_id)" in sql
     assert "force row level security" in sql
-    assert "current_setting(''app.organization_id''" in sql
+    assert "current_setting(''app.tenant_id''" in sql
     # Cardinalidad Person<->Lead: sin UNIQUE sobre person_id (ADR-C01).
-    assert "unique (organization_id, person_id)" not in sql
+    assert "unique (tenant_id, person_id)" not in sql

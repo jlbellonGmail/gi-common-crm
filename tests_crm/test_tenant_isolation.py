@@ -14,7 +14,7 @@ def test_org_a_list_leads_never_returns_org_b_items(service, ctx_a, ctx_b):
     service.create_lead(ctx_b, title="Lead de B")
     service.create_lead(ctx_a, title="Lead de A")
     items = service.list_leads(ctx_a)
-    assert all(item.organization_id == "org-a" for item in items)
+    assert all(item.tenant_id == ctx_a.tenant_id for item in items)
     assert len(items) == 1
 
 
@@ -54,7 +54,7 @@ def test_org_a_cannot_convert_org_b_lead(service, ctx_a, ctx_b):
         service.convert_lead(ctx_a, lead.lead_id, vertical_code="dental", external_type="patient", external_id="123")
 
 
-def test_status_history_is_scoped_per_organization(service, ctx_a, ctx_b):
+def test_status_history_is_scoped_per_tenant(service, ctx_a, ctx_b):
     lead_a = service.create_lead(ctx_a, title="A")
     service.change_status(ctx_a, lead_a.lead_id, lead_a.version, "contacted")
     lead_b = service.create_lead(ctx_b, title="B")

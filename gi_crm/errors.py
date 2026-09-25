@@ -40,7 +40,7 @@ class InvalidTransitionError(CrmError):
 
 class DuplicateExternalReferenceError(CrmError):
     code = "DUPLICATE_EXTERNAL_REFERENCE"
-    safe_message = "The external reference already exists for this organization and vertical."
+    safe_message = "The external reference already exists for this tenant and vertical."
 
 
 class CoreUnavailableError(CrmError):

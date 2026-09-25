@@ -26,7 +26,8 @@ class PersonsHttpApi:
 
     def find_duplicate_candidates(self, context, *, keys, limit: int = 20) -> dict:
         payload = {
-            "organization_id": context.organization_id,
+            "tenant_id": context.tenant_id,
+            "organization_id": context.tenant_id,
             "keys": list(keys),
             "limit": limit,
         }
@@ -35,9 +36,9 @@ class PersonsHttpApi:
     def get_person(self, context, person_id) -> dict:
         return self.transport(
             "GET", f"{self.base_url}/v1/persons/{person_id}",
-            json={"organization_id": context.organization_id},
+            json={"tenant_id": context.tenant_id, "organization_id": context.tenant_id},
         )
 
     def create_person(self, context, **data) -> dict:
-        payload = {"organization_id": context.organization_id, **data}
+        payload = {"tenant_id": context.tenant_id, "organization_id": context.tenant_id, **data}
         return self.transport("POST", f"{self.base_url}/v1/persons", json=payload)

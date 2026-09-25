@@ -14,7 +14,7 @@ bootstrap no cierra ninguna por sí mismo.
 - [x] 05-api-publica — `LeadsApi` de biblioteca (paginación por cursor, errores JSON-safe) y API HTTP versionada con OpenAPI.
 - [x] 06-seguimiento-multivertical — actividades, asignación/reasignación, historial comercial y referencias de conversión para verticales, sin acoplar CRM a ninguna.
 - [x] 07-readiness-integracion — CI real (product-tests deja de ser placeholder), documentación completa, supply-chain, evidencia para HITL de release.
-- [ ] 08-persistencia-supabase-real — desplegar y verificar la migración `crm.*` en el proyecto Supabase real compartido con Core/Persons. Requiere autorización humana explícita antes de iniciarse, no sólo en el merge: toca infraestructura ajena en uso.
+- [-] 08-persistencia-supabase-real — desplegar y verificar la migración `crm.*` en el proyecto Supabase real compartido con Core/Persons. Requiere autorización humana explícita antes de iniciarse, no sólo en el merge: toca infraestructura ajena en uso.
 
 02 a 06 se ejecutan como un único Milestone (`leads-core-implementation`)
 por su interdependencia directa, igual que hizo GI-COMMON-PERSONS con sus
@@ -31,6 +31,7 @@ tag ni una release en este documento.
 - [AGENTS](AGENTS.md) — operación del circuito.
 - [STATUS](STATUS.md) — estado actual para reentrada.
 - [Contexto de producto](docs/producto/contexto-producto.md) — conocimiento funcional persistente.
+
 
 
 

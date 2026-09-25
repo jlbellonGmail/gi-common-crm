@@ -64,50 +64,50 @@ def connection(migrated_database):
     conn.close()
 
 
-def _set_tenant(conn, organization_id, user_id):
+def _set_tenant(conn, tenant_id, user_id):
     with conn.cursor() as cur:
-        cur.execute("select set_config('app.organization_id', %s, false)", (organization_id,))
+        cur.execute("select set_config('app.tenant_id', %s, false)", (tenant_id,))
         cur.execute("select set_config('app.user_id', %s, false)", (user_id,))
 
 
 def test_insert_and_read_back_lead_under_own_tenant(connection):
     store = PostgresLeadStore(lambda: connection)
-    _set_tenant(connection, "org-a", "user-a")
-    lead = Lead(uuid4(), "org-a", title="Lead real")
+    _set_tenant(connection, "00000000-0000-0000-0000-00000000000a", "user-a")
+    lead = Lead(uuid4(), "00000000-0000-0000-0000-00000000000a", title="Lead real")
     store.insert_lead(connection, lead, "user-a")
-    row = store.get_lead(connection, "org-a", lead.lead_id)
+    row = store.get_lead(connection, "00000000-0000-0000-0000-00000000000a", lead.lead_id)
     assert row is not None
     assert row[2] == "new"
 
 
 def test_rls_blocks_reading_other_org_lead(connection):
     store = PostgresLeadStore(lambda: connection)
-    _set_tenant(connection, "org-a", "user-a")
-    lead = Lead(uuid4(), "org-a", title="Lead de A")
+    _set_tenant(connection, "00000000-0000-0000-0000-00000000000a", "user-a")
+    lead = Lead(uuid4(), "00000000-0000-0000-0000-00000000000a", title="Lead de A")
     store.insert_lead(connection, lead, "user-a")
 
-    _set_tenant(connection, "org-b", "user-b")
-    row = store.get_lead(connection, "org-a", lead.lead_id)
+    _set_tenant(connection, "00000000-0000-0000-0000-00000000000b", "user-b")
+    row = store.get_lead(connection, "00000000-0000-0000-0000-00000000000a", lead.lead_id)
     assert row is None
 
 
 def test_update_lead_fields_conflicts_on_stale_version(connection):
     store = PostgresLeadStore(lambda: connection)
-    _set_tenant(connection, "org-a", "user-a")
-    lead = Lead(uuid4(), "org-a", title="Lead")
+    _set_tenant(connection, "00000000-0000-0000-0000-00000000000a", "user-a")
+    lead = Lead(uuid4(), "00000000-0000-0000-0000-00000000000a", title="Lead")
     store.insert_lead(connection, lead, "user-a")
-    store.bump_lead_version(connection, "org-a", lead.lead_id, 1)
+    store.bump_lead_version(connection, "00000000-0000-0000-0000-00000000000a", lead.lead_id, 1)
     with pytest.raises(VersionConflictError):
-        store.bump_lead_version(connection, "org-a", lead.lead_id, 1)
+        store.bump_lead_version(connection, "00000000-0000-0000-0000-00000000000a", lead.lead_id, 1)
 
 
 def test_duplicate_external_reference_is_rejected(connection):
     store = PostgresLeadStore(lambda: connection)
-    _set_tenant(connection, "org-a", "user-a")
-    lead = Lead(uuid4(), "org-a", title="Lead")
+    _set_tenant(connection, "00000000-0000-0000-0000-00000000000a", "user-a")
+    lead = Lead(uuid4(), "00000000-0000-0000-0000-00000000000a", title="Lead")
     store.insert_lead(connection, lead, "user-a")
-    reference = LeadExternalReference(uuid4(), "org-a", lead.lead_id, "dental", "patient", "123")
+    reference = LeadExternalReference(uuid4(), "00000000-0000-0000-0000-00000000000a", lead.lead_id, "dental", "patient", "123")
     store.insert_external_reference(connection, reference)
-    dup = LeadExternalReference(uuid4(), "org-a", lead.lead_id, "dental", "patient", "123")
+    dup = LeadExternalReference(uuid4(), "00000000-0000-0000-0000-00000000000a", lead.lead_id, "dental", "patient", "123")
     with pytest.raises(DuplicateExternalReferenceError):
         store.insert_external_reference(connection, dup)

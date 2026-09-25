@@ -31,10 +31,10 @@ class CoreHttpApi:
         self.base_url = base_url.rstrip("/")
         self.transport = transport
 
-    def authorize(self, user_id: str, organization_id: str, permission: str, location_id: str | None = None) -> dict:
+    def authorize(self, user_id: str, tenant_id: str, permission: str, location_id: str | None = None) -> dict:
         payload = {
             "user_id": user_id,
-            "organization_id": organization_id,
+            "tenant_id": tenant_id,
             "permission": permission,
             "location_id": location_id,
         }

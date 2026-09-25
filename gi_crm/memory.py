@@ -19,8 +19,8 @@ class InMemoryLeadStore:
         self.audit = []
         self.audit_sink = audit_sink
 
-    def _lead(self, org, lead_id):
-        lead = self.leads.get((org, lead_id))
+    def _lead(self, tenant_id, lead_id):
+        lead = self.leads.get((tenant_id, lead_id))
         if lead is None:
             raise NotFoundError()
         return lead
@@ -48,18 +48,18 @@ class InMemoryLeadStore:
 
     def create_lead(self, lead):
         with self._lock:
-            key = (lead.organization_id, lead.lead_id)
+            key = (lead.tenant_id, lead.lead_id)
             if key in self.leads:
                 raise VersionConflictError()
             self.leads[key] = lead
             return lead
 
-    def get_lead(self, org, lead_id):
-        return self.leads.get((org, lead_id))
+    def get_lead(self, tenant_id, lead_id):
+        return self.leads.get((tenant_id, lead_id))
 
-    def list_leads(self, org, *, status=None, owner_user_id=None, source_id=None, person_id=None, limit=20, after=None):
+    def list_leads(self, tenant_id, *, status=None, owner_user_id=None, source_id=None, person_id=None, limit=20, after=None):
         with self._lock:
-            items = [lead for (o, _), lead in self.leads.items() if o == org]
+            items = [lead for (t, _), lead in self.leads.items() if t == tenant_id]
             if status is not None:
                 items = [lead for lead in items if lead.status == status]
             if owner_user_id is not None:
@@ -75,55 +75,55 @@ class InMemoryLeadStore:
 
     def update_lead(self, lead, expected_version):
         with self._lock:
-            current = self._lead(lead.organization_id, lead.lead_id)
+            current = self._lead(lead.tenant_id, lead.lead_id)
             if current.version != expected_version:
                 raise VersionConflictError()
             updated = replace(
                 lead, version=current.version + 1, created_at=current.created_at, updated_at=utcnow(),
             )
-            self.leads[(lead.organization_id, lead.lead_id)] = updated
+            self.leads[(lead.tenant_id, lead.lead_id)] = updated
             return updated
 
     def append_status_event(self, event):
         with self._lock:
-            self._lead(event.organization_id, event.lead_id)
+            self._lead(event.tenant_id, event.lead_id)
             self.status_events.append(event)
 
-    def list_status_events(self, org, lead_id):
+    def list_status_events(self, tenant_id, lead_id):
         return sorted(
-            (event for event in self.status_events if event.organization_id == org and event.lead_id == lead_id),
+            (event for event in self.status_events if event.tenant_id == tenant_id and event.lead_id == lead_id),
             key=lambda event: event.occurred_at,
         )
 
     def append_activity(self, activity):
         with self._lock:
-            self._lead(activity.organization_id, activity.lead_id)
+            self._lead(activity.tenant_id, activity.lead_id)
             self.activities.append(activity)
             return activity
 
-    def list_activities(self, org, lead_id):
+    def list_activities(self, tenant_id, lead_id):
         return sorted(
-            (a for a in self.activities if a.organization_id == org and a.lead_id == lead_id),
+            (a for a in self.activities if a.tenant_id == tenant_id and a.lead_id == lead_id),
             key=lambda a: a.occurred_at,
         )
 
     def append_assignment(self, event):
         with self._lock:
-            self._lead(event.organization_id, event.lead_id)
+            self._lead(event.tenant_id, event.lead_id)
             self.assignments.append(event)
 
-    def list_assignments(self, org, lead_id):
+    def list_assignments(self, tenant_id, lead_id):
         return sorted(
-            (event for event in self.assignments if event.organization_id == org and event.lead_id == lead_id),
+            (event for event in self.assignments if event.tenant_id == tenant_id and event.lead_id == lead_id),
             key=lambda event: event.occurred_at,
         )
 
     def add_external_reference(self, reference):
         with self._lock:
-            self._lead(reference.organization_id, reference.lead_id)
-            key = (reference.organization_id, reference.vertical_code, reference.external_type, reference.external_id)
+            self._lead(reference.tenant_id, reference.lead_id)
+            key = (reference.tenant_id, reference.vertical_code, reference.external_type, reference.external_id)
             existing_keys = {
-                (r.organization_id, r.vertical_code, r.external_type, r.external_id)
+                (r.tenant_id, r.vertical_code, r.external_type, r.external_id)
                 for r in self.external_references.values()
             }
             if key in existing_keys:
@@ -131,8 +131,8 @@ class InMemoryLeadStore:
             self.external_references[reference.reference_id] = reference
             return reference
 
-    def list_external_references(self, org, lead_id):
+    def list_external_references(self, tenant_id, lead_id):
         return [
             r for r in self.external_references.values()
-            if r.organization_id == org and r.lead_id == lead_id
+            if r.tenant_id == tenant_id and r.lead_id == lead_id
         ]
