@@ -109,6 +109,18 @@ def test_post_hitl_gate_has_human_check(workflow_file: str):
         "post-hitl-merge-gate debe verificar aprobacion humana o human in-the-loop"
 
 
+def test_post_hitl_gate_derives_mode_for_legacy_features():
+    content = _read_workflow("post-hitl-merge-gate.yml")
+    legacy_feature = 'elif [[ "$head_ref" =~ ^feature/([0-9]{2}-[a-z0-9]+(-[a-z0-9]+)*)$ ]]'
+    branch_output = 'echo "branch=$head_ref" >> "$GITHUB_OUTPUT"'
+    mode_output = 'echo "mode=Feature" >> "$GITHUB_OUTPUT"'
+    start = content.index(legacy_feature)
+    end = content.index("elif [[", start + len(legacy_feature))
+    block = content[start:end]
+    assert branch_output in block
+    assert mode_output in block
+
+
 @pytest.mark.parametrize("workflow_file", ["post-merge-close-feature.yml"])
 def test_post_merge_close_has_steps(workflow_file: str):
     """post-merge-close-feature debe tener steps definidos."""
