@@ -16,7 +16,7 @@ foreach ($workflow in $workflows) {
     }
     if ($content -match 'upload-artifact|download-artifact' -and $content -notmatch 'retention-days:\s*[1-9][0-9]*') { Add-Failure "$($workflow.Name): artifact sin retention-days" }
 }
-foreach ($fileName in @("requirements-dev.txt", "requirements-docs.txt")) {
+foreach ($fileName in @("requirements-dev.txt", "requirements-docs.txt", "requirements-crm-dev.txt")) {
     $path = Join-Path $Root $fileName
     if (-not (Test-Path -LiteralPath $path)) { Add-Failure "${fileName}: falta manifiesto"; continue }
     foreach ($line in Get-Content -LiteralPath $path) {

@@ -46,3 +46,12 @@ def test_cursor_rejects_tampering(api, ctx_a):
     tampered = page["next_cursor"][:-1] + ("A" if page["next_cursor"][-1] != "A" else "B")
     with pytest.raises(ValidationError):
         api.list_leads(ctx_a, limit=2, cursor=tampered)
+
+
+def test_many_valid_cursors_round_trip_without_signature_delimiter_collisions(api, ctx_a):
+    for i in range(100):
+        api.create_lead(ctx_a, title=f"Cursor lead {i}-a")
+        api.create_lead(ctx_a, title=f"Cursor lead {i}-b")
+        page = api.list_leads(ctx_a, limit=1)
+        assert page["next_cursor"] is not None
+        assert len(api.list_leads(ctx_a, limit=1, cursor=page["next_cursor"])["items"]) == 1

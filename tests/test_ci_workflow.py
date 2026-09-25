@@ -67,11 +67,17 @@ def test_circuit_tests_job_runs_pytest():
     assert "pytest -v" in circuit_block
 
 
-def test_product_tests_job_has_placeholder_marker():
+def test_product_tests_job_runs_real_product_suite():
+    """07-readiness-integracion: el placeholder heredado del template se
+    reemplaza por la suite real de gi_crm contra un Postgres de servicio.
+    Ver docs/tecnica/readiness-integracion.md.
+    """
     content = _read_ci_workflow()
     product_block = _job_block(content, "product-tests")
-    assert "PLACEHOLDER" in product_block
-    assert "docs/tecnica/arquitectura.md" in product_block
+    assert "PLACEHOLDER" not in product_block
+    assert "postgres" in product_block
+    assert "CRM_TEST_DATABASE_URL" in product_block
+    assert "pytest -v tests_crm/" in product_block
 
 
 def test_validar_adaptadores_agenticos_is_a_real_gate():

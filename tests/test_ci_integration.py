@@ -60,11 +60,21 @@ def test_circuit_tests_runs_pytest(workflow_file: str):
 
 
 @pytest.mark.parametrize("workflow_file", ["ci.yml"])
-def test_product_tests_is_placeholder(workflow_file: str):
-    """product-tests debe contener mensaje de placeholder."""
+def test_product_tests_runs_real_suite(workflow_file: str):
+    """07-readiness-integracion: product-tests ya no es placeholder, corre
+    la suite real de gi_crm contra un Postgres de servicio. Ver
+    docs/tecnica/readiness-integracion.md.
+
+    No se verifica la ausencia case-insensitive de la palabra
+    "placeholder": el job conserva un comentario en prosa que menciona el
+    placeholder heredado del template para explicar por qué ya no existe
+    (ver docs/tecnica/readiness-integracion.md). Lo que debe ausentarse es
+    el marcador y el step reales de ese placeholder."""
     content = _read_workflow(workflow_file)
-    assert "placeholder" in content.lower(), "product-tests debe indicar es placeholder"
-    assert "arquitectura.md" in content.lower(), "debe referenciar docs/tecnica/arquitectura.md"
+    assert "PLACEHOLDER" not in content
+    assert "Placeholder (sin stack definido)" not in content
+    assert "postgres" in content.lower()
+    assert "pytest -v tests_crm/" in content
 
 
 @pytest.mark.parametrize("workflow_file", ["ci.yml"])
@@ -97,6 +107,18 @@ def test_post_hitl_gate_has_human_check(workflow_file: str):
     content = _read_workflow(workflow_file)
     assert re.search(r'human|aprobado', content, re.IGNORECASE), \
         "post-hitl-merge-gate debe verificar aprobacion humana o human in-the-loop"
+
+
+def test_post_hitl_gate_derives_mode_for_legacy_features():
+    content = _read_workflow("post-hitl-merge-gate.yml")
+    legacy_feature = 'elif [[ "$head_ref" =~ ^feature/([0-9]{2}-[a-z0-9]+(-[a-z0-9]+)*)$ ]]'
+    branch_output = 'echo "branch=$head_ref" >> "$GITHUB_OUTPUT"'
+    mode_output = 'echo "mode=Feature" >> "$GITHUB_OUTPUT"'
+    start = content.index(legacy_feature)
+    end = content.index("elif [[", start + len(legacy_feature))
+    block = content[start:end]
+    assert branch_output in block
+    assert mode_output in block
 
 
 @pytest.mark.parametrize("workflow_file", ["post-merge-close-feature.yml"])

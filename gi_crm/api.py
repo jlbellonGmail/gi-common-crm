@@ -22,12 +22,15 @@ class CursorCodec:
             {"o": org, "f": filters, "l": str(last_id)}, sort_keys=True, separators=(",", ":")
         ).encode()
         sig = hmac.new(self.secret, payload, hashlib.sha256).digest()
-        return base64.urlsafe_b64encode(payload + b"." + sig).decode().rstrip("=")
+        payload_token = base64.urlsafe_b64encode(payload).decode().rstrip("=")
+        signature_token = base64.urlsafe_b64encode(sig).decode().rstrip("=")
+        return f"{payload_token}.{signature_token}"
 
     def decode(self, org, filters, token):
         try:
-            raw = base64.urlsafe_b64decode(token + "=" * ((4 - len(token) % 4) % 4))
-            payload, sig = raw.rsplit(b".", 1)
+            payload_token, signature_token = token.split(".", 1)
+            payload = base64.urlsafe_b64decode(payload_token + "=" * ((4 - len(payload_token) % 4) % 4))
+            sig = base64.urlsafe_b64decode(signature_token + "=" * ((4 - len(signature_token) % 4) % 4))
             if not hmac.compare_digest(sig, hmac.new(self.secret, payload, hashlib.sha256).digest()):
                 raise ValueError
             data = json.loads(payload)

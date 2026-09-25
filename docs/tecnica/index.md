@@ -44,5 +44,6 @@ calificación subjetiva.
 - [Persistencia Aislamiento](persistencia-aislamiento.md)
 - [Api Publica](api-publica.md)
 - [Seguimiento Multivertical](seguimiento-multivertical.md)
+- [Readiness e integración](readiness-integracion.md)
 
 <!-- FEATURE_LINKS_END -->
