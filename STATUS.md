@@ -182,7 +182,7 @@ no se corrige en esta unidad por alcance.
 - Rama: develop
 - HEAD: cbbbbcd7998357d015910acfb5161878e3420c54
 - Remoto: https://github.com/jlbellonGmail/gi-common-crm.git
-- Working tree: dirty
+- Working tree: clean
 - Worktrees: 3
 - Worktrees Git: 3
 - Unidades activas: ninguna
