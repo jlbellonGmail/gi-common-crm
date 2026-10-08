@@ -1,9 +1,3 @@
-# Dependencias para correr los tests del circuito (scripts/*.ps1).
-# No hay backend de producto todavia; cuando exista, sus dependencias
-# de runtime iran en su propio requirements.txt (ver AGENTS.md).
-pytest==8.3.5
-# Validacion real de JSON Schema para .agentic/agents.json,
-# .agentic/models.json y runs/milestone-*/work-unit.json (ver
-# docs/tecnica/arquitectura.md, decision "Validacion real de JSON Schema
-# para .agentic/"). Tooling del propio circuito, no stack de producto.
-jsonschema==4.23.0
+# Requisitos de test del producto (los usa el gate L3: pip install . -r requirements-dev.txt).
+-r requirements-crm-dev.txt
+.[http,postgres]

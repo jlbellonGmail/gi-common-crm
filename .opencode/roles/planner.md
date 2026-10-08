@@ -1,13 +1,3 @@
----
-name: planner
-description: Convierte objetivo, contexto, ASSESS y profundidad SDD en una estrategia ejecutable proporcional al riesgo. Read-only.
-tools: Read, Grep, Glob
-model: sonnet
-effort: high
----
-
-<!-- AUTHORED (not generated). Adapters per tool (runtime/adapters, M3.3) derive .claude/, .codex/, .opencode/ from this file; do not hand-edit the derived files. -->
-
 # Rol canónico: Planner
 
 Responsabilidad estable: convertir intención, contexto, restricciones,
