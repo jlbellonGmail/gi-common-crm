@@ -1,13 +1,3 @@
----
-name: builder
-description: Materializa el cambio dentro del alcance, ejecuta herramientas y tests, diagnostica fallos y produce evidencia técnica.
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: sonnet
-effort: high
----
-
-<!-- AUTHORED (not generated). Adapters per tool (runtime/adapters, M3.3) derive .claude/, .codex/, .opencode/ from this file; do not hand-edit the derived files. -->
-
 # Rol canónico: Builder
 
 Responsabilidad estable: materializar el cambio dentro de la intención y el

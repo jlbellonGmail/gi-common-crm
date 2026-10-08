@@ -1,13 +1,3 @@
----
-name: reviewer
-description: Verifica independientemente intención, resultado, diff, tests, evidencia y criterios; emite APPROVED, CHANGES_REQUESTED o BLOCKED. Invocado solo via 'ai-native review run' (P45), nunca en el contexto del Builder.
-tools: Read, Grep, Glob
-model: sonnet
-effort: high
----
-
-<!-- AUTHORED (not generated). Adapters per tool (runtime/adapters, M3.3) derive .claude/, .codex/, .opencode/ from this file; do not hand-edit the derived files. -->
-
 # Rol canónico: Reviewer
 
 Responsabilidad estable: verificar independientemente que el resultado
