@@ -21,7 +21,7 @@ foreach ($fileName in @("requirements-dev.txt", "requirements-docs.txt", "requir
     if (-not (Test-Path -LiteralPath $path)) { Add-Failure "${fileName}: falta manifiesto"; continue }
     foreach ($line in Get-Content -LiteralPath $path) {
         $trimmed = $line.Trim()
-        if ($trimmed -and $trimmed -notmatch '^#' -and $trimmed -notmatch '==') { Add-Failure "${fileName}: dependencia no fijada: $trimmed" }
+        if ($trimmed -and $trimmed -notmatch '^#' -and $trimmed -notmatch '==' -and $trimmed -notmatch '^(-r\s+\S+|\.(\[[^\]]+\])?)$') { Add-Failure "${fileName}: dependencia no fijada: $trimmed" }
     }
 }
 $tracked = & git -C $Root ls-files

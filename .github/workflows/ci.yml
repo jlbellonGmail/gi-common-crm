@@ -34,6 +34,9 @@ jobs:
       - name: Tests (pytest)
         run: pytest -v
 
+      - name: Validar supply chain del circuito
+        run: pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-supply-chain.ps1
+
 
 
   # Stack de producto documentado en docs/tecnica/arquitectura-crm.md
