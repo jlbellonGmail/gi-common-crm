@@ -1,8 +1,10 @@
 # Manual operativo del Template
 
+> **Estado de plataforma (M7):** este repositorio esta migrado a AI-Native v3.0.1 (`ai-native.lock.json`, `.ai-native/migration-journal.json`); Template v2.x es LEGACY/TRANSITION. El resto de este manual describe el circuito Template original y se conserva como referencia. No existen en este arbol y no deben invocarse: `.agentic/`, `assess-work-unit.ps1`, `check-status.ps1`, `close-feature.ps1`, `complete-approved-pr.ps1`, `guard-develop-branch.yml`, `local-feature-reconcile.ps1`, `materialize-sdd.ps1`, `ready-for-pr.ps1`, `resolve-agentic-model.ps1`, `scripts/convergence.ps1`, `scripts/feature-contract.ps1`, `scripts/workunit-lib.ps1`, `start-work-unit.ps1`, `sync-agentic-adapters.ps1`, `wait-pr-ci.ps1`. `CONSTITUTION.md` fue sustituido por la constitucion de la plataforma (`core/constitution.md`, AI-Native v3.0.1). La proteccion de `develop` la aplica el ruleset `protect-develop-m6`, no un workflow `guard-develop-branch`.
+
 Este archivo define cómo operar este repositorio. Es una guía de ejecución,
 no el backlog, una spec de feature ni una fotografía del estado de Git.
-Para una regla normativa estable consultar [CONSTITUTION.md](CONSTITUTION.md);
+Para una regla normativa estable consultar [`core/constitution.md` de AI-Native v3.0.1](https://github.com/jlbellonGmail/ai-native/blob/v3.0.1/core/constitution.md);
 para el trabajo planificado consultar [ROADMAP.md](ROADMAP.md); para la
 reentrada consultar [STATUS.md](STATUS.md). Las decisiones técnicas y la
 matriz de compatibilidad del proyecto nuevo deben documentarse en
@@ -11,7 +13,7 @@ matriz de compatibilidad del proyecto nuevo deben documentarse en
 ## Reentrada operativa (STATUS.md)
 
 Al comenzar una sesión leer, en este orden operativo, `AGENTS.md`,
-`CONSTITUTION.md`, `ROADMAP.md`, `STATUS.md` y el estado real de Git:
+`core/constitution.md` (AI-Native v3.0.1), `ROADMAP.md`, `STATUS.md` y el estado real de Git:
 
 ```powershell
 git status --short --branch
@@ -49,7 +51,7 @@ resuelve por preferencia del agente: se registra y se pregunta antes de cerrar
 la spec. No se inventan reglas de negocio, permisos, datos, seguridad,
 privacidad, cumplimiento, resultados funcionales ni contenido legal.
 
-Los principios de `CONSTITUTION.md` son obligatorios: SDD antes de cambiar,
+Los principios de `core/constitution.md` (AI-Native v3.0.1) son obligatorios: SDD antes de cambiar,
 determinismo antes que IA, roles por capacidad, complejidad proporcional,
 evidencia trazable, fail-safe, reversibilidad, mínimo privilegio,
 portabilidad, evaluabilidad y observabilidad. El diseño v2 no habilita por sí
