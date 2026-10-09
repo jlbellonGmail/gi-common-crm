@@ -1,5 +1,7 @@
 # Manual operativo del Template
 
+> **Estado de plataforma (M7):** este repositorio esta migrado a AI-Native v3.0.1 (`ai-native.lock.json`, `.ai-native/migration-journal.json`); Template v2.x es LEGACY/TRANSITION. El resto de este manual describe el circuito Template original y se conserva como referencia: los archivos que cita y que no existen en el arbol (por ejemplo `.agentic/`, `CONSTITUTION.md` o scripts del circuito) fueron retirados al migrar y no deben invocarse. La proteccion de `develop` la aplica el ruleset `protect-develop-m6`, no un workflow `guard-develop-branch`.
+
 Este archivo define cómo operar este repositorio. Es una guía de ejecución,
 no el backlog, una spec de feature ni una fotografía del estado de Git.
 Para una regla normativa estable consultar [CONSTITUTION.md](CONSTITUTION.md);
